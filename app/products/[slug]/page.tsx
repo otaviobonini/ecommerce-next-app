@@ -1,4 +1,4 @@
-export default async function ProductPostPage({
+export default async function ProductPage({
   params,
 }: {
   params: Promise<{ slug: string }>;

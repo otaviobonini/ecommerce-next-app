@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function ProductPage() {
+export default function ProductsPage() {
   return (
     <main>
       <h1>the products</h1>

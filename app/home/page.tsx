@@ -1,3 +1,9 @@
+import Carroussel from "@/components/carroussel";
+
 export default function HomePage() {
-  return <h1>Home page</h1>;
+  return (
+    <div className="px-12 py-4">
+      <Carroussel></Carroussel>
+    </div>
+  );
 }
