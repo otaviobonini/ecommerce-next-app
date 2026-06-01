@@ -30,7 +30,7 @@ export default function Carousel() {
   return (
     <div className="relative w-full  h-[170px] sm:h-[250px] md:h-[350px] lg:h-[500px] overflow-hidden">
       <div
-        className="flex h-full transition-transform duration-500 ease-in-out"
+        className="flex h-full  transition-transform duration-500 ease-in-out"
         style={{ transform: `translateX(-${current * 100}%)` }}
       >
         {images.map((image, index) => (
