@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import Image from "next/image";
 import Logo from "@/public/Logo.png";
+import MobileMenu from "@/components/MobileMenu";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -31,27 +32,24 @@ export default function RootLayout({
     <html lang="pt-BR" className="h-full antialiased">
       <body className={`${poppins.className} min-h-full flex flex-col`}>
         <div className="bg-black flex flex-col">
-          <ul className="flex flex-wrap md:flex items-center gap-4 text-white">
+          <ul className="flex flex-wrap md:flex items-center gap-4 text-white ">
             <li className="ml-6 mb-8 flex items-center ">
+              <MobileMenu></MobileMenu>
               <Image height={150} width={150} src={Logo} alt="Logo" />
-              <FontAwesomeIcon
-                icon={faBars}
-                className="w-5 h-5 mr-18 translate-y-5 sm:hidden"
-              />
             </li>
 
             <li className="order-1 w-full mb-6 mr-3 ml-3 sm:order-0 sm:mb-0 sm:w-auto">
-              <div className="relative flex items-center">
+              <div className="relative flex items-center -mt-16 lg:mt-0 ">
                 <input
                   id="searchbar"
-                  placeholder="Busque seus produtos"
-                  className="bg-white order-2  placeholder:text-black text-black rounded-md px-4 py-2 pr-10 w-full md:w-[768px]"
+                  placeholder="O que está buscando?"
+                  className="bg-white order-2  placeholder:text-gray-500 text-black rounded-lg px-4 py-2  w-full md:w-[768px]  "
                   type="search"
                 />
 
                 <label
                   htmlFor="searchbar"
-                  className="absolute right-3 text-black cursor-pointer"
+                  className="absolute right-3 text-purple-700 cursor-pointer"
                 >
                   <FontAwesomeIcon
                     className="h-5 w-5"
@@ -61,17 +59,30 @@ export default function RootLayout({
               </div>
             </li>
 
-            <li>
-              <Link className="flex items-center gap-4" href="/">
+            <li className="ml-auto">
+              <Link className="flex items-center gap-4 " href="/">
                 <FontAwesomeIcon className="h-7 w-7" icon={faTruck} />
-                <span className="hidden sm:inline">Rastrear seu pedido</span>
+                <span className="hidden md:inline">Rastrear seu pedido</span>
               </Link>
             </li>
 
-            <li>
-              <Link href="/cart" className="flex items-center gap-4 mr-4">
-                <FontAwesomeIcon className="h-7 w-7" icon={faCartShopping} />
-                <span className="hidden sm:inline">Carrinho</span>
+            <li className="mr-2">
+              <Link
+                href="/cart"
+                className="flex items-center gap-4 mr-4 relative"
+              >
+                <div className="relative">
+                  <span>
+                    <FontAwesomeIcon
+                      className="h-7 w-7 mr-2"
+                      icon={faCartShopping}
+                    />
+                    <span className="absolute right-0 top-0 font-light -translate-y-4 translate-x-4 bg-purple-700 rounded-4xl px-2">
+                      0
+                    </span>
+                  </span>
+                </div>
+                <span className="hidden md:inline">Carrinho</span>
               </Link>
             </li>
           </ul>

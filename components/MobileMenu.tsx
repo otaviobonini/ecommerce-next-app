@@ -1,0 +1,47 @@
+"use client";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars, faX } from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
+import Link from "next/link";
+
+export default function MobileMenu() {
+  const [modalWindow, setModalWindow] = useState(false);
+  return (
+    <>
+      <button
+        className="sm:hidden"
+        onClick={() => setModalWindow(!modalWindow)}
+      >
+        <FontAwesomeIcon
+          icon={modalWindow ? faX : faBars}
+          className="w-5 h-5  translate-y-5 sm:hidden"
+        />
+      </button>
+      {modalWindow && (
+        <div className="fixed top-30 left-0 z-50 h-full w-full bg-white text-black shadow-2xl p-6 sm:hidden">
+          <div className="flex flex-col gap-4">
+            <Link href="/">Início</Link>
+            <Link href="/">Catálogo</Link>
+            <Link href="/">Entrar em contato</Link>
+          </div>
+
+          <hr className="my-5" />
+
+          <div className="flex flex-col gap-3">
+            <h1 className="font-bold">PRECISA DE AJUDA?</h1>
+            <Link href="tel:+5548999999999">Telefone aqui</Link>
+            <Link href="mailto:atendimento@faciliteei.com">E-mail aqui</Link>
+          </div>
+
+          <hr className="my-5" />
+
+          <div className="flex flex-col gap-3">
+            <h1 className="font-bold">SIGA-NOS</h1>
+            <Link href="/">Facebook</Link>
+            <Link href="/">Instagram</Link>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}

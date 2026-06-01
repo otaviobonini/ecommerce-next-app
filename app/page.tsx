@@ -1,13 +1,35 @@
-import Link from "next/link";
+import Carroussel from "@/components/Carroussel";
+import Categoria from "@/components/Categoria";
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-        <h1>Hello world</h1>
-        <p>
-          <Link href="/home">Home</Link>
-        </p>
+    <div className="">
+      <Carroussel></Carroussel>
+      <div className="p-4 flex gap-10 overflow-x-auto scrollbar-hide">
+        <Categoria
+          img="https://cdn.pixabay.com/photo/2026/05/27/04/29/04-29-48-584_1280.jpg"
+          category="Gatos"
+        ></Categoria>
+        <Categoria
+          img="https://cdn.pixabay.com/photo/2026/05/27/04/29/04-29-48-584_1280.jpg"
+          category="Gatos"
+        ></Categoria>
+        <Categoria
+          img="https://cdn.pixabay.com/photo/2026/05/27/04/29/04-29-48-584_1280.jpg"
+          category="Gatos"
+        ></Categoria>
+        <Categoria
+          img="https://cdn.pixabay.com/photo/2026/05/27/04/29/04-29-48-584_1280.jpg"
+          category="Gatos"
+        ></Categoria>
+        <Categoria
+          img="https://cdn.pixabay.com/photo/2026/05/27/04/29/04-29-48-584_1280.jpg"
+          category="Gatos"
+        ></Categoria>
+        <Categoria
+          img="https://cdn.pixabay.com/photo/2026/05/27/04/29/04-29-48-584_1280.jpg"
+          category="Gatos"
+        ></Categoria>
       </div>
     </div>
   );

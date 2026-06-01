@@ -28,19 +28,14 @@ export default function Carousel() {
   }
 
   return (
-    <div className="relative w-full h-[150px] sm:h-[200px] lg:h-[400px] overflow-hidden">
+    <div className="relative w-full  h-[170px] sm:h-[250px] md:h-[350px] lg:h-[500px] overflow-hidden">
       <div
         className="flex h-full transition-transform duration-500 ease-in-out"
         style={{ transform: `translateX(-${current * 100}%)` }}
       >
         {images.map((image, index) => (
           <div key={index} className="relative min-w-full h-full">
-            <Image
-              src={image}
-              alt={`Slide ${index + 1}`}
-              fill
-              className="object-cover "
-            />
+            <Image src={image} alt={`Slide ${index + 1}`} fill className=" " />
           </div>
         ))}
       </div>
@@ -55,7 +50,7 @@ export default function Carousel() {
       <label
         htmlFor="radio-1"
         className={`absolute bottom-1 left-1/2 
-  -translate-x-10 w-4 h-4 rounded-full cursor-pointer
+  -translate-x-10 w-3 h-3 rounded-full cursor-pointer
   ${current === 0 ? "bg-white" : "bg-gray-100 border border-black"}`}
       />
       <input
@@ -68,7 +63,7 @@ export default function Carousel() {
       <label
         htmlFor="radio-2"
         className={`absolute bottom-1 left-1/2 
-  translate-x-2 w-4 h-4 rounded-full cursor-pointer
+  translate-x-2 w-3 h-3 rounded-full cursor-pointer
   ${current === 1 ? "bg-white" : "bg-gray-100 border  border-black"}`}
       />
     </div>
