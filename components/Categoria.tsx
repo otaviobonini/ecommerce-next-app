@@ -17,7 +17,7 @@ export default function Categoria({ img, category }: CategoriaProps) {
         alt={category}
         width={200}
         height={200}
-        className="h-24 w-24 md:h-48 md:w-48 rounded-full object-cover"
+        className="h-32 w-32 md:h-48 md:w-48 rounded-full object-cover"
       />
 
       <h1 className="mt-2 text-center font-medium">{category}</h1>

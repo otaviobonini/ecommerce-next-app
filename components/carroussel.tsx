@@ -51,7 +51,7 @@ export default function Carousel() {
         htmlFor="radio-1"
         className={`absolute bottom-1 left-1/2 
   -translate-x-10 w-3 h-3 rounded-full cursor-pointer
-  ${current === 0 ? "bg-white" : "bg-gray-100 border border-black"}`}
+  ${current === 0 ? "bg-white" : "bg-transparent border-2  border-white"}`}
       />
       <input
         onClick={nextSlide}
@@ -64,7 +64,7 @@ export default function Carousel() {
         htmlFor="radio-2"
         className={`absolute bottom-1 left-1/2 
   translate-x-2 w-3 h-3 rounded-full cursor-pointer
-  ${current === 1 ? "bg-white" : "bg-gray-100 border  border-black"}`}
+  ${current === 1 ? "bg-white" : "bg-transparent border-2  border-white"}`}
       />
     </div>
   );

@@ -6,9 +6,9 @@ export default async function ProductPage({
   const { slug } = await params;
 
   return (
-    <main>
+    <div>
       <h1>the products {slug}</h1>
       <p>{slug}</p>
-    </main>
+    </div>
   );
 }

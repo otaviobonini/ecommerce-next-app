@@ -88,12 +88,12 @@ export default function RootLayout({
           </ul>
 
           <ul className="gap-10 ml-auto mr-auto p-6 text-white hidden sm:flex">
-            <li className="flex items-center gap-2 text-white">
+            <Link href="/" className="flex items-center gap-2 text-white">
               <FontAwesomeIcon icon={faBars} className="w-5 h-5" />
               <span>Menu</span>
-            </li>
-            <li>Catálogo</li>
-            <li>Entrar em contato</li>
+            </Link>
+            <Link href="/catalogo">Catálogo</Link>
+            <Link href="/contato">Entrar em contato</Link>
           </ul>
         </div>
 

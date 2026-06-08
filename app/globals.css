@@ -2,6 +2,7 @@
 
 body {
   font-family: var(--font-poppins), sans-serif;
+  background-color: rgb(236, 236, 235);
 }
 
 :root {

@@ -20,9 +20,15 @@ export default function MobileMenu() {
       {modalWindow && (
         <div className="fixed top-30 left-0 z-50 h-full w-full bg-white text-black shadow-2xl p-6 sm:hidden">
           <div className="flex flex-col gap-4">
-            <Link href="/">Início</Link>
-            <Link href="/">Catálogo</Link>
-            <Link href="/">Entrar em contato</Link>
+            <Link onClick={() => setModalWindow(false)} href="/">
+              Início
+            </Link>
+            <Link onClick={() => setModalWindow(false)} href="/catalogo">
+              Catálogo
+            </Link>
+            <Link onClick={() => setModalWindow(false)} href="/contato">
+              Entrar em contato
+            </Link>
           </div>
 
           <hr className="my-5" />
