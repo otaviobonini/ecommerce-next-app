@@ -1,6 +1,6 @@
 import Carroussel from "@/components/Carroussel";
 import Categoria from "@/components/Categoria";
-import Product from "@/components/Product";
+import Product from "@/components/ProductCard";
 import Link from "next/link";
 import { getProducts, getPrimaryImage, getCategories } from "@/seed";
 

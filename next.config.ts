@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "picsum.photos",
       },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
     ],
   },
   allowedDevOrigins: ["192.168.10.108"],

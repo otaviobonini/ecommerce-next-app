@@ -32,7 +32,7 @@ export default function RootLayout({
     <html lang="pt-BR" className="h-full antialiased">
       <body className={`${poppins.className} min-h-full flex flex-col`}>
         <div className="bg-black flex flex-col">
-          <ul className="flex flex-wrap md:flex items-center gap-4 text-white ">
+          <ul className="flex flex-wrap md:flex items-center gap-4 lg:ml-auto lg:mr-auto text-white ">
             <li className="ml-6 mb-8 flex items-center ">
               <MobileMenu></MobileMenu>
               <Link href="/">
@@ -40,12 +40,12 @@ export default function RootLayout({
               </Link>
             </li>
 
-            <li className="order-1 w-full mb-6 mr-3 ml-3 sm:order-0 sm:mb-0 sm:w-auto">
+            <li className="order-1 w-full mb-6 mr-3 ml-3  sm:order-0 sm:mb-0 sm:w-auto">
               <div className="relative flex items-center -mt-16 lg:mt-0 ">
                 <input
                   id="searchbar"
                   placeholder="O que está buscando?"
-                  className="bg-white order-2  placeholder:text-gray-500 text-black rounded-lg px-4 py-2  w-full md:w-[768px]  "
+                  className="bg-white order-2  placeholder:text-gray-500 text-black rounded-lg px-4 py-2   w-full md:w-[768px] lg:w-[1000px]  "
                   type="search"
                 />
 
@@ -61,8 +61,8 @@ export default function RootLayout({
               </div>
             </li>
 
-            <li className="ml-auto">
-              <Link className="flex items-center gap-4 " href="/">
+            <li className="ml-auto lg:ml-0">
+              <Link className="flex lg:text-lg items-center gap-4 " href="/">
                 <FontAwesomeIcon className="h-7 w-7" icon={faTruck} />
                 <span className="hidden md:inline">Rastrear seu pedido</span>
               </Link>
@@ -71,7 +71,7 @@ export default function RootLayout({
             <li className="mr-2">
               <Link
                 href="/cart"
-                className="flex items-center gap-4 mr-4 relative"
+                className="flex items-center lg:text-lg gap-4 mr-4 relative"
               >
                 <div className="relative">
                   <span>

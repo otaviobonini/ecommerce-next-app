@@ -11,7 +11,7 @@ interface productsType {
 export default function Product({ img, name, price, productId }: productsType) {
   return (
     <Link
-      href={`/product/${name}`}
+      href={`/product/${productId}`}
       id={productId}
       className="shrink-0 p-4 max-w-fit hover:scale-110 hover:border hover:shadow-md border border-transparent hover:border-gray-200 rounded-lg transition-all duration-300  flex flex-col "
     >

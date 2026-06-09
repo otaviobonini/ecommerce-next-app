@@ -28,14 +28,19 @@ export default function Carousel() {
   }
 
   return (
-    <div className="relative w-full  h-[170px] sm:h-[250px] md:h-[350px] lg:h-[500px] overflow-hidden">
+    <div className="relative w-full  h-[170px] sm:h-[250px] md:h-[350px] lg:h-[550px] overflow-hidden">
       <div
         className="flex h-full  transition-transform duration-500 ease-in-out"
         style={{ transform: `translateX(-${current * 100}%)` }}
       >
         {images.map((image, index) => (
-          <div key={index} className="relative min-w-full h-full">
-            <Image src={image} alt={`Slide ${index + 1}`} fill className=" " />
+          <div key={index} className="relative min-w-full  h-full">
+            <Image
+              src={image}
+              alt={`Slide ${index + 1}`}
+              fill
+              className="object-fill"
+            />
           </div>
         ))}
       </div>

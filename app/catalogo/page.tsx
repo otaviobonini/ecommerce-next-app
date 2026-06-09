@@ -1,4 +1,4 @@
-import Product from "@/components/Product";
+import Product from "@/components/ProductCard";
 import { getProducts, getPrimaryImage } from "@/seed";
 
 export default async function CatalogoPage() {
