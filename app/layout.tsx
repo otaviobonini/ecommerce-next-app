@@ -35,7 +35,9 @@ export default function RootLayout({
           <ul className="flex flex-wrap md:flex items-center gap-4 text-white ">
             <li className="ml-6 mb-8 flex items-center ">
               <MobileMenu></MobileMenu>
-              <Image height={150} width={150} src={Logo} alt="Logo" />
+              <Link href="/">
+                <Image height={150} width={150} src={Logo} alt="Logo" />
+              </Link>
             </li>
 
             <li className="order-1 w-full mb-6 mr-3 ml-3 sm:order-0 sm:mb-0 sm:w-auto">

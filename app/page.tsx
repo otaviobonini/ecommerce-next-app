@@ -1,38 +1,23 @@
 import Carroussel from "@/components/Carroussel";
 import Categoria from "@/components/Categoria";
 import Product from "@/components/Product";
-import { products } from "@/seed";
 import Link from "next/link";
+import { getProducts, getPrimaryImage, getCategories } from "@/seed";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const { products } = await getProducts(10, 0);
+  const categories = await getCategories();
   return (
     <div className="">
       <Carroussel></Carroussel>
       <div className=" py-12 ml-8 flex gap-10 overflow-x-auto scrollbar-hide">
-        <Categoria
-          img="https://cdn.pixabay.com/photo/2026/05/27/04/29/04-29-48-584_1280.jpg"
-          category="Gatos"
-        ></Categoria>
-        <Categoria
-          img="https://cdn.pixabay.com/photo/2026/05/27/04/29/04-29-48-584_1280.jpg"
-          category="Gatos"
-        ></Categoria>
-        <Categoria
-          img="https://cdn.pixabay.com/photo/2026/05/27/04/29/04-29-48-584_1280.jpg"
-          category="Gatos"
-        ></Categoria>
-        <Categoria
-          img="https://cdn.pixabay.com/photo/2026/05/27/04/29/04-29-48-584_1280.jpg"
-          category="Gatos"
-        ></Categoria>
-        <Categoria
-          img="https://cdn.pixabay.com/photo/2026/05/27/04/29/04-29-48-584_1280.jpg"
-          category="Gatos"
-        ></Categoria>
-        <Categoria
-          img="https://cdn.pixabay.com/photo/2026/05/27/04/29/04-29-48-584_1280.jpg"
-          category="Gatos"
-        ></Categoria>
+        {categories.map((category) => (
+          <Categoria
+            key={category.categoryId}
+            category={category.name}
+            img={category.categoryImage!}
+          />
+        ))}
       </div>
       <div className="p-4">
         <div className="flex items-center justify-between px-4 py-4">
@@ -47,14 +32,17 @@ export default function HomePage() {
           </Link>
         </div>
         <div className="flex gap-16 overflow-x-auto scrollbar-hide ">
-          {products.map((product) => (
-            <Product
-              key={product.name}
-              img={product.img}
-              name={product.name}
-              price={product.price}
-            />
-          ))}
+          {products
+            .filter((product) => product.isFeatured === true)
+            .map((product) => (
+              <Product
+                key={product.productId}
+                img={getPrimaryImage(product)}
+                name={product.productName}
+                price={parseFloat(product.productPrice)}
+                productId={String(product.productId)}
+              />
+            ))}
         </div>
       </div>
     </div>

@@ -5,13 +5,15 @@ interface productsType {
   img: string;
   name: string;
   price: number;
+  productId: string;
 }
 
-export default function Product({ img, name, price }: productsType) {
+export default function Product({ img, name, price, productId }: productsType) {
   return (
     <Link
       href={`/product/${name}`}
-      className="shrink-0 p-4 hover:scale-110 hover:border hover:shadow-md border border-transparent hover:border-gray-200 rounded-lg transition-all duration-300  flex flex-col "
+      id={productId}
+      className="shrink-0 p-4 max-w-fit hover:scale-110 hover:border hover:shadow-md border border-transparent hover:border-gray-200 rounded-lg transition-all duration-300  flex flex-col "
     >
       <Image
         src={img}
