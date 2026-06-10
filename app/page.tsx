@@ -13,6 +13,7 @@ export default async function HomePage() {
       <div className=" py-12 ml-8 flex gap-10 overflow-x-auto scrollbar-hide">
         {categories.map((category) => (
           <Categoria
+            categoryId={category.categoryId}
             key={category.categoryId}
             category={category.name}
             img={category.categoryImage!}

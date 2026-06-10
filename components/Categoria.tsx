@@ -4,12 +4,17 @@ import Link from "next/link";
 interface CategoriaProps {
   img: string;
   category: string;
+  categoryId: number;
 }
 
-export default function Categoria({ img, category }: CategoriaProps) {
+export default function Categoria({
+  img,
+  categoryId,
+  category,
+}: CategoriaProps) {
   return (
     <Link
-      href={`category/${category}`}
+      href={`/category/${categoryId}?categoryName=${category}`}
       className="gap-4 items-center shrink-0 flex flex-col"
     >
       <Image

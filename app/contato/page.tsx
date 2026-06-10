@@ -22,25 +22,31 @@ export default function ContatoPage() {
   return (
     <div className="flex ">
       <form
-        className="flex flex-col w-2xl md:shadow-2xl rounded-2xl ml-auto mr-auto gap-4 p-4 mt-12"
+        className="flex flex-col w-2xl rounded-2xl ml-auto mr-auto gap-4 p-4 mt-12"
         onSubmit={handleSubmit((data) => {
           console.log(data);
           reset();
         })}
       >
-        <h1 className="text-3xl font-bold text-center">Entre em Contato</h1>
-
-        <p className="text-gray-500 text-center mb-4">
-          Preencha os dados abaixo e responderemos o mais breve possível.
-        </p>
+        <div className="mb-8">
+          <p className="text-xs font-medium tracking-widest uppercase text-gray-400 mb-1">
+            Suporte
+          </p>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Entre em Contato
+          </h1>
+          <p className="text-gray-500 mt-2 text-sm leading-relaxed">
+            Preencha os dados abaixo e responderemos o mais breve possível.
+          </p>
+        </div>
         <label htmlFor="fullName">Insira seu nome completo</label>
         <input
           id="fullName"
-          className="border rounded-lg p-2"
-          {...register("fullName", {
-            required: "É preciso preencher o nome completo",
-          })}
-          placeholder="Nome completo"
+          className={`border rounded-xl p-3 text-sm outline-none transition-colors focus:border-black placeholder:text-gray-300 ${
+            errors.fullName ? "border-red-400 bg-red-50" : "border-gray-200"
+          }`}
+          {...register("fullName", { required: "Preencha seu nome completo" })}
+          placeholder="João da Silva"
         />
         <p className="text-sm text-red-500">{errors.fullName?.message}</p>
 
@@ -48,11 +54,11 @@ export default function ContatoPage() {
         <input
           id="email"
           type="email"
-          className="border rounded-lg p-2"
-          {...register("email", {
-            required: "É preciso preencher com seu email",
-          })}
-          placeholder="Email"
+          className={`border rounded-xl p-3 text-sm outline-none transition-colors focus:border-black placeholder:text-gray-300 ${
+            errors.email ? "border-red-400 bg-red-50" : "border-gray-200"
+          }`}
+          {...register("email", { required: "Preencha seu email" })}
+          placeholder="joao@email.com"
         />
         <p className="text-sm text-red-500">{errors.email?.message}</p>
 
@@ -60,11 +66,11 @@ export default function ContatoPage() {
         <input
           id="telephone"
           type="tel"
-          className="border rounded-lg p-2"
-          {...register("telephone", {
-            required: "É preciso preencher com seu número de telefone",
-          })}
-          placeholder="Número de telefone"
+          className={`border rounded-xl p-3 text-sm outline-none transition-colors focus:border-black placeholder:text-gray-300 ${
+            errors.telephone ? "border-red-400 bg-red-50" : "border-gray-200"
+          }`}
+          {...register("telephone", { required: "Preencha seu telefone" })}
+          placeholder="(48) 99999-0000"
         />
         <p className="text-sm text-red-500">{errors.telephone?.message}</p>
 
@@ -73,18 +79,20 @@ export default function ContatoPage() {
         </label>
         <textarea
           id="message"
-          className="border rounded-lg p-2"
-          {...register("message", {
-            required: "Escreva sua mensagem",
-          })}
-          placeholder="Escreva sua mensagem"
+          rows={4}
+          className={`border rounded-xl p-3 text-sm outline-none transition-colors focus:border-black placeholder:text-gray-300 resize-none ${
+            errors.message ? "border-red-400 bg-red-50" : "border-gray-200"
+          }`}
+          {...register("message", { required: "Escreva sua mensagem" })}
+          placeholder="Como podemos te ajudar?"
         />
         <p className="text-sm text-red-500">{errors.message?.message}</p>
-        <input
-          className="cursor-pointer rounded-md border border-white p-2 hover:border hover:border-gray-300 w-24 self-center"
+        <button
           type="submit"
-          value="Enviar"
-        />
+          className="mt-2 w-full bg-black text-white rounded-xl p-3 text-sm font-medium hover:bg-gray-900 transition-colors cursor-pointer"
+        >
+          Enviar mensagem
+        </button>
       </form>
     </div>
   );

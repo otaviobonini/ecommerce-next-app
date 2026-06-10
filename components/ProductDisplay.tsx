@@ -32,16 +32,19 @@ export default function ProductDisplay({
   const [selectedImage, setSelectedImage] = useState(primaryImage);
 
   return (
-    <div className="p-12">
-      <div className="mb-12 max-w-96 mx-auto ">
+    <div className="mx-auto max-w-6xl p-6 md:grid md:grid-cols-2 md:gap-16 md:p-12 md:items-start">
+      {/* Coluna da esquerda — Fotos */}
+      <div className="mb-12  mx-auto p-4">
         {selectedImage && (
-          <Image
-            className="w-full max-w-sm max-h-48 object-contain mx-auto rounded-xl "
-            src={selectedImage.url}
-            alt={productName}
-            width={400}
-            height={400}
-          />
+          <div className="w-full  rounded-xl ">
+            <Image
+              className="w-full h-80 object-fill p-6"
+              src={selectedImage.url}
+              alt={productName}
+              width={600}
+              height={600}
+            />
+          </div>
         )}
         <div className="flex gap-3 mt-4">
           {images.map((image) => (
@@ -52,41 +55,52 @@ export default function ProductDisplay({
               width={50}
               height={50}
               onClick={() => setSelectedImage(image)}
-              className="rounded-lg object-cover cursor-pointer"
+              className={`rounded-lg object-cover cursor-pointer ${selectedImage === image ? "border-black border-2 " : ""}`}
             />
           ))}
         </div>
       </div>
-      <p className="text-gray-400">Novo</p>
-      <h1 className="text-2xl py-1 font-semibold">{productName}</h1>
-      <p className={stock > 0 ? "text-blue-500" : "text-red-500"}>
-        {stock > 0 ? "Disponivel em estoque" : "Fora de estoque"}
-      </p>
+      {/* Coluna direita — informações */}
+      <div className="flex flex-col p-4">
+        <p className="text-sm font-semibold tracking-widest uppercase text-gray-400 mb-1">
+          {isFeatured ? "Destaque" : "Novo"}
+        </p>
+        <h1 className="text-2xl py-1 font-semibold">{productName}</h1>
+        <p className={stock > 0 ? "text-blue-500" : "text-red-500"}>
+          {stock > 0 ? "Disponivel em estoque" : "Fora de estoque"}
+        </p>
 
-      <p className="text-gray-400 py-4">
-        Preço:{" "}
-        <span className="text-2xl ml-2 font-semibold text-black">
-          R${" "}
-          {Number(productPrice).toLocaleString("pt-BR", {
-            minimumFractionDigits: 2,
-          })}
-        </span>
-      </p>
-      <div className="flex  gap-4 py-6">
-        <p>Quantidade:</p>{" "}
-        <button onClick={() => setCounter((prev) => Math.max(1, prev - 1))}>
-          -
-        </button>{" "}
-        <p>{counter}</p>{" "}
-        <button onClick={() => setCounter((prev) => Math.min(stock, prev + 1))}>
-          +
+        <p className="text-gray-400 py-4">
+          Preço:{" "}
+          <span className="text-2xl ml-2 font-semibold text-black">
+            R${" "}
+            {Number(productPrice).toLocaleString("pt-BR", {
+              minimumFractionDigits: 2,
+            })}
+          </span>
+        </p>
+        <div className="flex  gap-4 py-6">
+          <p>Quantidade:</p>{" "}
+          <button
+            className="cursor-pointer"
+            onClick={() => setCounter((prev) => Math.max(1, prev - 1))}
+          >
+            -
+          </button>{" "}
+          <p>{counter}</p>{" "}
+          <button
+            className="cursor-pointer "
+            onClick={() => setCounter((prev) => Math.min(stock, prev + 1))}
+          >
+            +
+          </button>
+        </div>
+        <button className="bg-black w-full hover:bg-gray-900 text-white rounded-xl my-8 p-4">
+          Adicionar ao carrinho
         </button>
+        <p className="font-semibold py-2">Descrição do produto</p>
+        <p>{productDescription}</p>
       </div>
-      <button className="bg-black w-full hover:bg-gray-900 text-white rounded-xl my-8 p-4">
-        Adicionar ao carrinho
-      </button>
-      <p className="font-semibold py-2">Descrição do produto</p>
-      <p>{productDescription}</p>
     </div>
   );
 }

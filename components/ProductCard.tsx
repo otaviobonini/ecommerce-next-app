@@ -20,7 +20,7 @@ export default function Product({ img, name, price, productId }: productsType) {
         width={200}
         height={100}
         alt=""
-        className="h-48 w-48 rounded-lg"
+        className="h-48 w-48 rounded-lg lg:h-64 lg:w-64"
       ></Image>
       <h1 className=" text-gray-400 py-4">{name}</h1>
       <p className="text-xl font-bold ">R$ {price.toFixed(2)}</p>

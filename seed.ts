@@ -2,6 +2,18 @@ import { Product, ProductsResponse, CategoryResponse } from "./types/product";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
 
+export async function getCategory(categoryId: number) {
+  const res = await fetch(
+    `${API_URL}/categories/${categoryId}/products`,
+    { next: { revalidate: 60 } }, // ISR: revalida a cada 60s
+  );
+  if (!res.ok) {
+    throw new Error(`Erro ao buscar produtos da categoria: ${res.status}`);
+  }
+
+  return res.json();
+}
+
 export async function getProducts(
   limit = 10,
   offset = 0,
