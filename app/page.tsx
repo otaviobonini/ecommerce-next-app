@@ -26,13 +26,13 @@ export default async function HomePage() {
             Mais vendidos da loja
           </h1>{" "}
           <Link
-            href="/category/bestsellers"
+            href="/bestseller"
             className="text-blue-500 font-semibold hover:text-blue-700 transition-colors"
           >
             Ver todos
           </Link>
         </div>
-        <div className="flex gap-16 overflow-x-auto scrollbar-hide ">
+        <div className="flex gap-16 overflow-x-auto overflow-y-hidden scrollbar-hide ">
           {products
             .filter((product) => product.isFeatured === true)
             .map((product) => (

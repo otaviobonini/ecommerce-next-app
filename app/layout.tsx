@@ -12,6 +12,7 @@ import {
   faBars,
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
+import { getCategories } from "@/seed";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -23,6 +24,7 @@ export const metadata: Metadata = {
   description: "Ecommerce next app",
 };
 
+const categories = await getCategories();
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -133,41 +135,16 @@ export default function RootLayout({
               <h2 className="font-bold text-lg mb-4">DEPARTAMENTOS</h2>
 
               <ul className="space-y-2 text-gray-300">
-                <li>
-                  <a href="#" className="hover:text-white transition">
-                    Acessórios
-                  </a>
-                </li>
-
-                <li>
-                  <a href="#" className="hover:text-white transition">
-                    Cozinha
-                  </a>
-                </li>
-
-                <li>
-                  <a href="#" className="hover:text-white transition">
-                    Limpeza
-                  </a>
-                </li>
-
-                <li>
-                  <a href="#" className="hover:text-white transition">
-                    Mobilidade
-                  </a>
-                </li>
-
-                <li>
-                  <a href="#" className="hover:text-white transition">
-                    Segurança
-                  </a>
-                </li>
-
-                <li>
-                  <a href="#" className="hover:text-white transition">
-                    Todos os produtos
-                  </a>
-                </li>
+                {categories.map((category) => (
+                  <li key={category.categoryId}>
+                    <Link
+                      href={`/category/${category.categoryId}?categoryName=${category.name}`}
+                      className="hover:text-white transition"
+                    >
+                      {category.name}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </div>
 
@@ -179,21 +156,21 @@ export default function RootLayout({
 
               <ul className="space-y-2 text-gray-300">
                 <li>
-                  <a href="#" className="hover:text-white transition">
+                  <a href="/policy" className="hover:text-white transition">
                     Trocas e Devolução
                   </a>
                 </li>
 
                 <li>
-                  <a href="#" className="hover:text-white transition">
+                  <Link href="/privacy" className="hover:text-white transition">
                     Políticas de Privacidade
-                  </a>
+                  </Link>
                 </li>
 
                 <li>
-                  <a href="#" className="hover:text-white transition">
+                  <Link href="/contato" className="hover:text-white transition">
                     Entrar em contato
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
