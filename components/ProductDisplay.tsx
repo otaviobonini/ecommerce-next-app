@@ -29,7 +29,7 @@ export default function ProductDisplay({
   images,
 }: ProductDisplayInterface) {
   const [counter, setCounter] = useState(1);
-  const { addItem } = useCart();
+  const { addItem, openCart } = useCart();
 
   function handleAddToCart() {
     for (let i = 0; i < counter; i++) {
@@ -40,6 +40,7 @@ export default function ProductDisplay({
         imageUrl: primaryImage?.url ?? "",
         quantity: counter,
       });
+      openCart();
     }
   }
 

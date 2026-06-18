@@ -17,6 +17,7 @@ interface CartContextType {
   openCart: () => void;
   closeCart: () => void;
   totalItems: number;
+  totalPrice: number;
 }
 const CartContext = createContext<CartContextType | null>(null);
 
@@ -55,6 +56,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     );
   }
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
+  const totalPrice = items.reduce(
+    (sum, i) => sum + i.quantity * i.productPrice,
+    0,
+  );
 
   return (
     <CartContext.Provider
@@ -67,6 +72,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         openCart: () => setIsOpen(true),
         closeCart: () => setIsOpen(false),
         totalItems,
+        totalPrice,
       }}
     >
       {children}
