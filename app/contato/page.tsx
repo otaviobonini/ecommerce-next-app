@@ -22,7 +22,7 @@ export default function ContatoPage() {
   return (
     <div className="flex ">
       <form
-        className="flex flex-col w-2xl rounded-2xl ml-auto mr-auto gap-4 p-4 mt-12"
+        className="flex flex-col w-2xl rounded-2xl ml-auto mr-auto gap-4 p-4 mt-12 bg-gray-100 "
         onSubmit={handleSubmit((data) => {
           console.log(data);
           reset();
