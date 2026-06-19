@@ -1,4 +1,4 @@
-import { Product, ProductsResponse, Category } from "./types/product";
+import { Product, ProductsResponse, Category } from "../../schemas/product";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
 

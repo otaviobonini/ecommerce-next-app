@@ -22,7 +22,7 @@ export default function CartProduct({
 
   return (
     <div
-      id={productId}
+      id={productId.toString()}
       className="shrink-0  p-4 max-w-fit hover:border hover:shadow-md border border-transparent hover:border-gray-200 rounded-lg transition-all duration-300  flex flex-col "
     >
       <Image

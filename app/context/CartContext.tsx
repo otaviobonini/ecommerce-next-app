@@ -1,5 +1,6 @@
 "use client";
 import { createContext, useContext, useState, ReactNode } from "react";
+import { addCartItem, createCart } from "../services/cart.service";
 export interface CartItem {
   productId: number;
   productName: string;
@@ -18,6 +19,7 @@ interface CartContextType {
   closeCart: () => void;
   totalItems: number;
   totalPrice: number;
+  finishCart: (token: string) => void;
 }
 const CartContext = createContext<CartContextType | null>(null);
 
@@ -43,6 +45,24 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   function removeItem(productId: number) {
     setItems((prev) => prev.filter((i) => i.productId !== productId));
+  }
+
+  async function finishCart(token: string): Promise<void> {
+    const cart = await createCart(token);
+
+    await Promise.all(
+      items.map((item) =>
+        addCartItem(
+          {
+            cartId: cart.cartId,
+            productId: item.productId,
+            quantity: item.quantity,
+          },
+          token,
+        ),
+      ),
+    );
+    setItems([]);
   }
 
   function updateQuantity(productId: number, quantity: number) {
@@ -73,6 +93,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         closeCart: () => setIsOpen(false),
         totalItems,
         totalPrice,
+        finishCart,
       }}
     >
       {children}
@@ -82,5 +103,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
 export function useCart() {
   const ctx = useContext(CartContext);
+  if (!ctx) throw new Error("No context");
   return ctx;
 }

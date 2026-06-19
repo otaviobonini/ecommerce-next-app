@@ -32,16 +32,14 @@ export default function ProductDisplay({
   const { addItem, openCart } = useCart();
 
   function handleAddToCart() {
-    for (let i = 0; i < counter; i++) {
-      addItem({
-        productId,
-        productName,
-        productPrice: Number(productPrice),
-        imageUrl: primaryImage?.url ?? "",
-        quantity: counter,
-      });
-      openCart();
-    }
+    addItem({
+      productId,
+      productName,
+      productPrice: Number(productPrice),
+      imageUrl: primaryImage?.url ?? "",
+      quantity: counter,
+    });
+    openCart();
   }
 
   const primaryImage = images.find((image) => image.isPrimary) ?? images[0];

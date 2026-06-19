@@ -4,11 +4,31 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
 import { useCart } from "@/app/context/CartContext";
 import CartProduct from "./CartProduct";
+import { useAuth } from "@/app/context/AuthContext";
+import { useState } from "react";
+import AuthModal from "./auth/AuthModal";
+import { redirect } from "next/navigation";
 
 export default function Carrinho() {
-  const { items, totalItems, totalPrice, isOpen, openCart, closeCart } =
-    useCart();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const {
+    items,
+    totalItems,
+    totalPrice,
+    isOpen,
+    finishCart,
+    openCart,
+    closeCart,
+  } = useCart();
+  const { token } = useAuth();
 
+  function handleCheckout() {
+    if (!token) {
+      setShowAuthModal(true);
+      return;
+    }
+    redirect("/checkout");
+  }
   return (
     <>
       <button onClick={openCart} className="flex gap-5 hover:cursor-pointer">
@@ -63,10 +83,24 @@ export default function Carrinho() {
             minimumFractionDigits: 2,
           })}
         </p>
-        <button className="hover:cursor-pointer bg-black w-full hover:bg-gray-900 text-white rounded-xl my-8 p-4">
+        <button
+          onClick={handleCheckout}
+          className="hover:cursor-pointer bg-black w-full hover:bg-gray-900 text-white rounded-xl my-8 p-4"
+        >
           Finalizar compra
         </button>
       </div>
+      <AuthModal
+        onSuccess={() => {
+          setShowAuthModal(false);
+          finishCart(token!);
+          router.push("/checkout");
+        }}
+        isOpen={showAuthModal}
+        onClose={() => {
+          setShowAuthModal(false);
+        }}
+      ></AuthModal>
     </>
   );
 }
