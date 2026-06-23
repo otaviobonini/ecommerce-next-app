@@ -8,6 +8,7 @@ import {
   useEffect,
 } from "react";
 import {
+  logout as logoutRequest,
   login as loginRequest,
   register as registerRequest,
 } from "../services/auth.service";
@@ -30,6 +31,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [refreshToken, setRefreshToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -56,6 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(TOKEN_KEY, authToken);
     localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
     localStorage.setItem(USER_KEY, JSON.stringify(authUser));
+    setRefreshToken(refreshToken);
     setToken(authToken);
     setUser(authUser);
   }
@@ -75,7 +78,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await login({ email: data.email, password: data.password });
   }
 
-  function logout() {
+  async function logout() {
+    await logoutRequest(refreshToken!);
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(REFRESH_TOKEN_KEY);
     localStorage.removeItem(USER_KEY);

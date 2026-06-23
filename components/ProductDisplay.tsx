@@ -7,7 +7,7 @@ interface ProductDisplayInterface {
   productId: number;
   productName: string;
   productPrice: string;
-  productDescription: string;
+  productDescription: string | null;
   stock: number;
   isFeatured: boolean;
   categoryId: number;
@@ -23,7 +23,7 @@ export default function ProductDisplay({
   productId,
   productName,
   productPrice,
-  productDescription,
+  productDescription = "",
   stock,
   isFeatured,
   images,

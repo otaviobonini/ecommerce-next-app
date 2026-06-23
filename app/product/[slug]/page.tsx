@@ -12,7 +12,7 @@ export default async function ProductPage({
 
   return (
     <div>
-      <ProductDisplay {...product} />
+      <ProductDisplay {...product} categoryId={product.categoryId!} />
     </div>
   );
 }

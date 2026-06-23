@@ -7,7 +7,7 @@ import CartProduct from "./CartProduct";
 import { useAuth } from "@/app/context/AuthContext";
 import { useState } from "react";
 import AuthModal from "./auth/AuthModal";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 
 export default function Carrinho() {
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -21,7 +21,7 @@ export default function Carrinho() {
     closeCart,
   } = useCart();
   const { token } = useAuth();
-
+  const router = useRouter();
   function handleCheckout() {
     if (!token) {
       setShowAuthModal(true);
@@ -57,7 +57,7 @@ export default function Carrinho() {
         <button
           onClick={closeCart}
           aria-label="Fechar carrinho"
-          className="text-black hover:text-black transition-colors p-1"
+          className="text-white hover:cursor-pointer bg-black rounded-xl p-2  hover:text-black transition-colors "
         >
           Fechar
         </button>

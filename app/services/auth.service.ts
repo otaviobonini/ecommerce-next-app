@@ -38,3 +38,11 @@ export async function login(data: LoginInput): Promise<LoginResponse> {
   const json = await res.json();
   return LoginResponseSchema.parse(json);
 }
+
+export async function logout(refreshToken: string) {
+  await fetch(`${API_URL}/logout`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ refreshToken }),
+  });
+}

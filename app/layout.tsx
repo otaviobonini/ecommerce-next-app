@@ -6,17 +6,13 @@ import Logo from "@/public/Logo.png";
 import MobileMenu from "@/components/MobileMenu";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faTruck,
-  faCartShopping,
-  faBars,
-  faMagnifyingGlass,
-} from "@fortawesome/free-solid-svg-icons";
+import { faTruck, faBars } from "@fortawesome/free-solid-svg-icons";
 import { getCategories } from "@/app/services/product.service";
 import { CartProvider } from "./context/CartContext";
 import Carrinho from "@/components/Carrinho";
 import { AuthProvider } from "./context/AuthContext";
 import LogoutButton from "@/components/auth/LogoutButton";
+import InputComponent from "@/components/InputComponent";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -50,24 +46,7 @@ export default function RootLayout({
                 </li>
 
                 <li className="order-1 w-full mb-6 mr-3 ml-3  sm:order-0 sm:mb-0 sm:w-auto">
-                  <div className="relative flex items-center -mt-16 lg:mt-0 ">
-                    <input
-                      id="searchbar"
-                      placeholder="O que está buscando?"
-                      className="bg-white order-2  placeholder:text-gray-500 text-black rounded-lg px-4 py-2   w-full md:w-[768px] lg:w-[1000px]  "
-                      type="search"
-                    />
-
-                    <label
-                      htmlFor="searchbar"
-                      className="absolute right-3 text-purple-700 cursor-pointer"
-                    >
-                      <FontAwesomeIcon
-                        className="h-5 w-5"
-                        icon={faMagnifyingGlass}
-                      />
-                    </label>
-                  </div>
+                  <InputComponent></InputComponent>
                 </li>
 
                 <li className="ml-auto lg:ml-0">
@@ -82,12 +61,12 @@ export default function RootLayout({
                   </Link>
                 </li>
 
-                <li className="mr-2">
+                <li className="">
                   <div className="flex items-center lg:text-lg gap-4 mr-4 relative hover:cursor-pointer">
                     <Carrinho></Carrinho>
                   </div>
                 </li>
-                <li className="mr-2">
+                <li className="-ml-2">
                   <div className="flex items-center lg:text-lg gap-4 mr-4 relative hover:cursor-pointer">
                     <LogoutButton></LogoutButton>
                   </div>
