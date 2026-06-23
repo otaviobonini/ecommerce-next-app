@@ -16,6 +16,7 @@ import { getCategories } from "@/app/services/product.service";
 import { CartProvider } from "./context/CartContext";
 import Carrinho from "@/components/Carrinho";
 import { AuthProvider } from "./context/AuthContext";
+import LogoutButton from "@/components/auth/LogoutButton";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -84,6 +85,11 @@ export default function RootLayout({
                 <li className="mr-2">
                   <div className="flex items-center lg:text-lg gap-4 mr-4 relative hover:cursor-pointer">
                     <Carrinho></Carrinho>
+                  </div>
+                </li>
+                <li className="mr-2">
+                  <div className="flex items-center lg:text-lg gap-4 mr-4 relative hover:cursor-pointer">
+                    <LogoutButton></LogoutButton>
                   </div>
                 </li>
               </ul>
