@@ -5,6 +5,7 @@ import { getProducts } from "@/app/services/product.service";
 import { useEffect, useState } from "react";
 import { Product } from "@/schemas/product";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function InputComponent() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -60,7 +61,12 @@ export default function InputComponent() {
       {filteredProductsList.length !== 0 && (
         <div className="flex flex-col gap-2 z-40 w-11/12 md:w-3xl lg:w-250 absolute mt-2 bg-white rounded-xl shadow-2xl border border-gray-100 p-2 ">
           {filteredProductsList.map((product) => (
-            <div
+            <Link
+              onClick={() => {
+                setText("");
+                setFilteredProductsList([]);
+              }}
+              href={`/product/${product.productId}`}
               className="group flex items-center gap-4 p-2 rounded-lg transition-colors duration-150 hover:bg-purple-50 cursor-pointer"
               key={product.productId}
             >
@@ -75,7 +81,7 @@ export default function InputComponent() {
               <h1 className="text-sm font-medium text-gray-900 truncate group-hover:text-purple-700 transition-colors">
                 {product.productName}
               </h1>
-            </div>
+            </Link>
           ))}
         </div>
       )}
