@@ -1,67 +1,63 @@
-import { Product, ProductsResponse, CategoryResponse } from "./types/product";
+import { Product, ProductsResponse, Category } from "../../schemas/product";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
 
-export async function getCategory(categoryId: number) {
-  const res = await fetch(
-    `${API_URL}/categories/${categoryId}/products`,
-    { next: { revalidate: 60 } }, // ISR: revalida a cada 60s
-  );
+// GET /categories/:categoryId/products → Product[]
+export async function getCategory(categoryId: number): Promise<Product[]> {
+  const res = await fetch(`${API_URL}/categories/${categoryId}/products`, {
+    next: { revalidate: 60 },
+  });
   if (!res.ok) {
     throw new Error(`Erro ao buscar produtos da categoria: ${res.status}`);
   }
-
   return res.json();
 }
 
+// GET /products?limit=&offset= → ProductsResponse
 export async function getProducts(
   limit = 10,
   offset = 0,
 ): Promise<ProductsResponse> {
   const res = await fetch(
     `${API_URL}/products?limit=${limit}&offset=${offset}`,
-    { next: { revalidate: 60 } }, // ISR: revalida a cada 60s
+    { next: { revalidate: 60 } },
   );
-
   if (!res.ok) {
     throw new Error(`Erro ao buscar produtos: ${res.status}`);
   }
-
   return res.json();
 }
 
-export async function getCategories(): Promise<CategoryResponse> {
+// GET /categories → Category[]  (array direto, sem envelope)
+export async function getCategories(): Promise<Category[]> {
   const res = await fetch(`${API_URL}/categories`, {
     next: { revalidate: 60 },
   });
   if (!res.ok) {
-    throw new Error("Erro ao buscar categorias");
+    throw new Error(`Erro ao buscar categorias: ${res.status}`);
   }
-
   return res.json();
 }
 
+// GET /product/:productId → Product
 export async function getProduct(productId: number): Promise<Product> {
   const res = await fetch(`${API_URL}/product/${productId}`, {
     next: { revalidate: 60 },
   });
-
   if (!res.ok) {
     throw new Error(`Erro ao buscar produto ${productId}: ${res.status}`);
   }
-
   return res.json();
 }
 
-export async function getFeaturedProducts() {
+// GET /categories/featured/products → Product[]
+export async function getFeaturedProducts(): Promise<Product[]> {
   const res = await fetch(`${API_URL}/categories/featured/products`, {
     next: { revalidate: 60 },
   });
-
   if (!res.ok) {
     throw new Error(`Erro ao buscar produtos em destaque: ${res.status}`);
   }
-
   return res.json();
 }
 

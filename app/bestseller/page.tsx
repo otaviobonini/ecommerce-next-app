@@ -1,5 +1,5 @@
 import Product from "@/components/ProductCard";
-import { getProducts, getPrimaryImage } from "@/seed";
+import { getProducts, getPrimaryImage } from "@/app/services/product.service";
 
 export default async function MaisVendidosPage() {
   const { products } = await getProducts(100);

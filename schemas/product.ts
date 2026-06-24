@@ -25,10 +25,8 @@ export interface ProductsResponse {
   hasNext: boolean;
 }
 
-export interface CategoryResponse {
-  categories: Category[];
-}
-
+// A API retorna Category[] diretamente — sem envelope { categories: [...] }
+// CategoryResponse foi removida pois não reflete o contrato real da API
 export interface Category {
   categoryId: number;
   name: string;

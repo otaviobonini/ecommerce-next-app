@@ -2,7 +2,11 @@ import Carroussel from "@/components/Carroussel";
 import Categoria from "@/components/Categoria";
 import Product from "@/components/ProductCard";
 import Link from "next/link";
-import { getProducts, getPrimaryImage, getCategories } from "@/seed";
+import {
+  getProducts,
+  getPrimaryImage,
+  getCategories,
+} from "@/app/services/product.service";
 
 export default async function HomePage() {
   const { products } = await getProducts(10, 0);

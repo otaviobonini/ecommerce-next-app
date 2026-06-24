@@ -1,5 +1,5 @@
 import ProductDisplay from "@/components/ProductDisplay";
-import { getProduct } from "@/seed";
+import { getProduct } from "@/app/services/product.service";
 
 export default async function ProductPage({
   params,
@@ -12,7 +12,7 @@ export default async function ProductPage({
 
   return (
     <div>
-      <ProductDisplay {...product} />
+      <ProductDisplay {...product} categoryId={product.categoryId!} />
     </div>
   );
 }

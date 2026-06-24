@@ -1,5 +1,5 @@
 import ProductCard from "@/components/ProductCard";
-import { getCategory, getPrimaryImage } from "@/seed";
+import { getCategory, getPrimaryImage } from "@/app/services/product.service";
 
 export default async function CategoryPage({
   params,

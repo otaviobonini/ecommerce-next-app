@@ -1,4 +1,5 @@
 "use client";
+import { useCart } from "@/app/context/CartContext";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -6,7 +7,7 @@ interface ProductDisplayInterface {
   productId: number;
   productName: string;
   productPrice: string;
-  productDescription: string;
+  productDescription: string | null;
   stock: number;
   isFeatured: boolean;
   categoryId: number;
@@ -19,14 +20,27 @@ interface ProductDisplayInterface {
 }
 
 export default function ProductDisplay({
+  productId,
   productName,
   productPrice,
-  productDescription,
+  productDescription = "",
   stock,
   isFeatured,
   images,
 }: ProductDisplayInterface) {
   const [counter, setCounter] = useState(1);
+  const { addItem, openCart } = useCart();
+
+  function handleAddToCart() {
+    addItem({
+      productId,
+      productName,
+      productPrice: Number(productPrice),
+      imageUrl: primaryImage?.url ?? "",
+      quantity: counter,
+    });
+    openCart();
+  }
 
   const primaryImage = images.find((image) => image.isPrimary) ?? images[0];
   const [selectedImage, setSelectedImage] = useState(primaryImage);
@@ -95,7 +109,10 @@ export default function ProductDisplay({
             +
           </button>
         </div>
-        <button className="bg-black w-full hover:bg-gray-900 text-white rounded-xl my-8 p-4">
+        <button
+          onClick={handleAddToCart}
+          className="bg-black w-full hover:bg-gray-900 text-white rounded-xl my-8 p-4"
+        >
           Adicionar ao carrinho
         </button>
         <p className="font-semibold py-2">Descrição do produto</p>
