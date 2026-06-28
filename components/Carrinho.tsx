@@ -57,7 +57,7 @@ export default function Carrinho() {
         <button
           onClick={closeCart}
           aria-label="Fechar carrinho"
-          className="text-white hover:cursor-pointer bg-black rounded-xl p-2  hover:text-black transition-colors "
+          className="text-white hover:cursor-pointer bg-black rounded-xl p-2 mb-2  hover:text-black transition-colors "
         >
           Fechar
         </button>
