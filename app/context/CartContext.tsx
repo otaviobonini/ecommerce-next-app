@@ -1,6 +1,12 @@
 "use client";
 import { createContext, useContext, useState, ReactNode } from "react";
-import { addCartItem, createCart } from "../services/cart.service";
+import {
+  addCartItem,
+  createCart,
+  getCart as getCartService,
+  getCartItems as getCartItemsService,
+} from "../services/cart.service";
+import { Cart, CartItemWithProduct } from "@/schemas/cart.schema";
 export interface CartItem {
   productId: number;
   productName: string;
@@ -20,6 +26,7 @@ interface CartContextType {
   totalItems: number;
   totalPrice: number;
   finishCart: (token: string) => void;
+  getCartItems: (token: string) => Promise<CartItemWithProduct[]>;
 }
 const CartContext = createContext<CartContextType | null>(null);
 
@@ -41,6 +48,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
       return [...prev, item];
     });
+  }
+
+  async function getCartItems(token: string): Promise<CartItemWithProduct[]> {
+    const cart = await getCartService(token);
+    return await getCartItemsService(cart.cartId, token);
   }
 
   function removeItem(productId: number) {
@@ -94,6 +106,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         totalItems,
         totalPrice,
         finishCart,
+        getCartItems,
       }}
     >
       {children}

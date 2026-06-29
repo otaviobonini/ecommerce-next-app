@@ -27,6 +27,7 @@ export default function Carrinho() {
       setShowAuthModal(true);
       return;
     }
+    finishCart(token);
     redirect("/checkout");
   }
   return (
