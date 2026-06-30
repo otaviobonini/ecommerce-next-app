@@ -1,12 +1,19 @@
 "use client";
-import { createContext, useContext, useState, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
 import {
   addCartItem,
   createCart,
   getCart as getCartService,
   getCartItems as getCartItemsService,
 } from "../services/cart.service";
-import { Cart, CartItemWithProduct } from "@/schemas/cart.schema";
+import { CartItemWithProduct } from "@/schemas/cart.schema";
+import { useAuth } from "./AuthContext";
 export interface CartItem {
   productId: number;
   productName: string;
@@ -31,9 +38,34 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {
+  const { token } = useAuth();
   const [items, setItems] = useState<CartItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
 
+  useEffect(() => {
+    if (!token) return;
+
+    async function syncFromBackend() {
+      const cart = await getCartService(token!);
+      if (!cart) return; // usuário ainda não tem carrinho — estado normal
+
+      const cartItems = await getCartItemsService(cart.cartId, token!);
+      setItems(
+        cartItems.map((ci) => ({
+          productId: ci.productId,
+          productName: ci.product.productName,
+          productPrice: Number(ci.product.productPrice),
+          quantity: ci.quantity,
+          imageUrl:
+            ci.product.images.find((i) => i.isPrimary)?.url ??
+            ci.product.images[0]?.url ??
+            "",
+        })),
+      );
+    }
+
+    syncFromBackend();
+  }, [token]);
   function addItem(item: CartItem) {
     setItems((prev: CartItem[]) => {
       const existing = prev.find((i) => i.productId === item.productId);

@@ -22,13 +22,13 @@ export default function Carrinho() {
   } = useCart();
   const { token } = useAuth();
   const router = useRouter();
-  function handleCheckout() {
+  async function handleCheckout() {
     if (!token) {
       setShowAuthModal(true);
       return;
     }
-    finishCart(token);
-    redirect("/checkout");
+    await finishCart(token);
+    router.push("/checkout");
   }
   return (
     <>
