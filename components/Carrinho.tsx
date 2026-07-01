@@ -22,12 +22,13 @@ export default function Carrinho() {
   } = useCart();
   const { token } = useAuth();
   const router = useRouter();
-  function handleCheckout() {
+  async function handleCheckout() {
     if (!token) {
       setShowAuthModal(true);
       return;
     }
-    redirect("/checkout");
+    await finishCart(token);
+    router.push("/checkout");
   }
   return (
     <>
@@ -57,7 +58,7 @@ export default function Carrinho() {
         <button
           onClick={closeCart}
           aria-label="Fechar carrinho"
-          className="text-white hover:cursor-pointer bg-black rounded-xl p-2  hover:text-black transition-colors "
+          className="text-white hover:cursor-pointer bg-black rounded-xl p-2 mb-2  hover:text-black transition-colors "
         >
           Fechar
         </button>
@@ -91,9 +92,9 @@ export default function Carrinho() {
         </button>
       </div>
       <AuthModal
-        onSuccess={() => {
+        onSuccess={async () => {
           setShowAuthModal(false);
-          finishCart(token!);
+          await finishCart(token!);
           router.push("/checkout");
         }}
         isOpen={showAuthModal}

@@ -13,7 +13,7 @@ export default function Product({ img, name, price, productId }: productsType) {
     <Link
       href={`/product/${productId}`}
       id={productId}
-      className="shrink-0 p-4 max-w-fit hover:scale-110 hover:border hover:shadow-md border border-transparent hover:border-gray-200 rounded-lg transition-all duration-300  flex flex-col "
+      className="shrink-0 p-4 max-w-fit hover:scale-110 mb-8 mt-4 hover:border hover:shadow-md border border-transparent hover:border-gray-200 rounded-lg transition-all duration-300  flex flex-col "
     >
       <Image
         src={img}

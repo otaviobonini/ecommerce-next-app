@@ -13,6 +13,7 @@ import {
   register as registerRequest,
 } from "../services/auth.service";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
 const TOKEN_KEY = "auth_token";
 const REFRESH_TOKEN_KEY = "auth_refresh_token";
 const USER_KEY = "auth_user";
@@ -49,6 +50,51 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    if (!token) return;
+
+    // JWT é só Base64 — decodifica o payload sem precisar de biblioteca
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    const expiresAt = payload.exp * 1000; // exp é em segundos, Date usa ms
+    const msUntilRenew = expiresAt - Date.now() - 60_000; // renova 60s antes
+
+    if (msUntilRenew <= 0) {
+      // token já expirado ou prestes a expirar — renova agora
+      renewToken();
+      return;
+    }
+
+    const timer = setTimeout(renewToken, msUntilRenew);
+    return () => clearTimeout(timer); // limpa se o componente desmontar ou token mudar
+  }, [token]);
+
+  async function renewToken() {
+    const storedRefreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
+    if (!storedRefreshToken) return;
+
+    try {
+      const res = await fetch(`${API_URL}/refresh-token`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refreshToken: storedRefreshToken }),
+      });
+      if (!res.ok) {
+        // refreshToken expirado — desloga silenciosamente
+        logout();
+        return;
+      }
+      const { token: newToken, refreshToken: newRefreshToken } =
+        await res.json();
+      persistSession(
+        /* user atual, sem mudar */ user!,
+        newToken,
+        newRefreshToken,
+      );
+    } catch {
+      // falha de rede — vai tentar de novo na próxima vez que a página montar
+    }
+  }
 
   function persistSession(
     authUser: AuthUser,
