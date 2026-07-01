@@ -92,9 +92,9 @@ export default function Carrinho() {
         </button>
       </div>
       <AuthModal
-        onSuccess={() => {
+        onSuccess={async () => {
           setShowAuthModal(false);
-          finishCart(token!);
+          await finishCart(token!);
           router.push("/checkout");
         }}
         isOpen={showAuthModal}

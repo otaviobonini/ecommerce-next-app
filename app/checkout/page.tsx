@@ -9,6 +9,7 @@ import { CartItemWithProduct } from "@/schemas/cart.schema";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useAddress } from "../context/AddressContext";
+import AddressModal from "@/components/AddressModal";
 
 export default function CheckoutPage() {
   const { getCartItems } = useCart();
@@ -16,7 +17,9 @@ export default function CheckoutPage() {
   const [cart, setCart] = useState<CartItemWithProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { addresses } = useAddress();
+  const { addresses, deleteAddress } = useAddress();
+  const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
+
   const [selectedAddressId, setSelectedAddressId] = useState<number | null>(
     null,
   );
@@ -27,6 +30,15 @@ export default function CheckoutPage() {
       setCart((prev) => prev.filter((item) => item.cartItemId !== cartItemId));
     } catch (e) {
       setError(e instanceof Error ? e.message : "Erro ao remover item");
+    }
+  }
+
+  async function handleDeleteAddress(addressId: number) {
+    if (!token) return;
+    try {
+      await deleteAddress(addressId, token);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Erro ao remover endereço");
     }
   }
   const totalCart = cart.reduce((total, item) => {
@@ -71,7 +83,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6 p-8 max-w-5xl mx-auto">
+    <div className="flex flex-col p-4 lg:flex-row gap-6 lg:p-8 max-w-5xl mx-auto">
       {/* Lista de itens */}
       <div className="flex-1 flex flex-col gap-3">
         <h1 className="text-2xl font-semibold mb-2">Seu carrinho</h1>
@@ -79,7 +91,7 @@ export default function CheckoutPage() {
         {cart.map((item) => (
           <div
             key={item.cartItemId}
-            className="flex gap-4 p-4 rounded-2xl bg-gray-100 border border-gray-200"
+            className="flex flex-col sm:flex-row gap-4 p-4 rounded-2xl bg-gray-100 border border-gray-200"
           >
             <div className="w-[88px] h-[88px] rounded-md bg-gray-200 flex items-center justify-center overflow-hidden flex-shrink-0">
               <Image
@@ -109,7 +121,7 @@ export default function CheckoutPage() {
             <button
               onClick={() => handleDeleteItem(item.cartItemId)}
               aria-label="Remover item"
-              className="flex items-center  gap-1.5 px-3 py-1.5 rounded-md border border-red-200 bg-red-50 text-red-600 text-sm hover:bg-red-100 transition-colors cursor-pointer self-start"
+              className="flex items-center ml-auto sm:ml-0  gap-1.5 px-3 py-1.5 rounded-md border border-red-200 bg-red-50 text-red-600 text-sm hover:bg-red-100 transition-colors cursor-pointer self-start"
             >
               <FontAwesomeIcon icon={faTrash} className="text-xs" />
               Remover
@@ -129,7 +141,7 @@ export default function CheckoutPage() {
       </div>
 
       {/* Endereços */}
-      <div className="lg:w-[500px] flex flex-col gap-4 p-5 rounded-2xl bg-gray-100 border border-gray-200 h-fit lg:sticky lg:top-8">
+      <div className="lg:w-[600px] flex flex-col gap-4 p-5 rounded-2xl bg-gray-100 border border-gray-200 h-fit lg:sticky lg:top-8">
         <h2 className="text-xl font-semibold">
           Escolha seu endereço para entrega
         </h2>
@@ -143,7 +155,7 @@ export default function CheckoutPage() {
               {addresses.map((address) => (
                 <label
                   key={address.addressId}
-                  className={`flex flex-col gap-0.5 p-3 rounded-lg border cursor-pointer transition-colors ${
+                  className={`flex flex-col relative gap-0.5 p-3 rounded-lg border cursor-pointer transition-colors ${
                     selectedAddressId === address.addressId
                       ? "border-purple-500 bg-purple-50"
                       : "border-gray-200 bg-white hover:border-gray-300"
@@ -163,14 +175,31 @@ export default function CheckoutPage() {
                   <span className="text-xs text-gray-500 ml-6">
                     {address.city} - {address.state}, {address.zipCode}
                   </span>
+                  <button
+                    onClick={() => handleDeleteAddress(address.addressId)}
+                    aria-label="Remover item"
+                    className="flex items-center absolute top-1 right-1 sm:ml-0  gap-1.5 px-1 py-1 rounded-md border border-red-200 bg-red-50 text-red-600 text-sm hover:bg-red-100 transition-colors cursor-pointer self-start"
+                  >
+                    <FontAwesomeIcon icon={faTrash} className="text-xs" />
+                  </button>
                 </label>
               ))}
             </div>
           )}
         </div>
-        <button className="w-full bg-green-600 hover:bg-green-800 text-white py-3 rounded-full transition-colors duration-300 cursor-pointer">
+        <button
+          onClick={() => setIsAddressModalOpen(true)}
+          className="w-full bg-green-600 hover:bg-green-800 text-white py-3 rounded-full transition-colors duration-300 cursor-pointer"
+        >
           Adicionar endereço
         </button>
+        <AddressModal
+          isOpen={isAddressModalOpen}
+          onClose={() => setIsAddressModalOpen(false)}
+          onSuccess={() => {
+            setIsAddressModalOpen(false);
+          }}
+        />
       </div>
       {/* Resumo */}
       <div className="lg:w-[500px] flex flex-col gap-4 p-5 rounded-2xl bg-gray-100 border border-gray-200 h-fit lg:sticky lg:top-8">

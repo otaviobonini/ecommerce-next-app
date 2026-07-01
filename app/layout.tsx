@@ -38,6 +38,7 @@ export default function RootLayout({
           <CartProvider>
             <AddressProvider>
               <div id="auth-modal"></div>
+              <div id="address-modal"></div>
               <div className="bg-black flex flex-col">
                 <ul className="flex flex-wrap md:flex items-center gap-4 lg:ml-auto lg:mr-auto text-white ">
                   <li className="ml-6 mb-8 flex items-center ">
