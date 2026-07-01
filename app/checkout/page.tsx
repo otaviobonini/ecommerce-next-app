@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useAddress } from "../context/AddressContext";
 import AddressModal from "@/components/AddressModal";
+import { createOrder } from "../services/order.service";
 
 export default function CheckoutPage() {
   const { getCartItems } = useCart();
@@ -32,7 +33,18 @@ export default function CheckoutPage() {
       setError(e instanceof Error ? e.message : "Erro ao remover item");
     }
   }
-
+  async function handleCheckout() {
+    if (!token || !selectedAddressId) return;
+    try {
+      const { paymentLink } = await createOrder(
+        { addressId: selectedAddressId },
+        token,
+      );
+      window.location.href = paymentLink;
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Erro ao finalizar compra");
+    }
+  }
   async function handleDeleteAddress(addressId: number) {
     if (!token) return;
     try {
@@ -83,7 +95,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="flex flex-col p-4 lg:flex-row gap-6 lg:p-8 max-w-5xl mx-auto">
+    <div className="flex flex-col p-4 lg:flex-row gap-6 lg:p-8 max-w-6xl mx-auto">
       {/* Lista de itens */}
       <div className="flex-1 flex flex-col gap-3">
         <h1 className="text-2xl font-semibold mb-2">Seu carrinho</h1>
@@ -213,7 +225,10 @@ export default function CheckoutPage() {
             })}
           </span>
         </div>
-        <button className="w-full bg-purple-600 hover:bg-purple-800 text-white py-3 rounded-full transition-colors duration-300 cursor-pointer">
+        <button
+          onClick={handleCheckout}
+          className="w-full bg-purple-600 hover:bg-purple-800 text-white py-3 rounded-full transition-colors duration-300 cursor-pointer"
+        >
           Continuar para pagamento
         </button>
       </div>
