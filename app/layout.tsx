@@ -15,6 +15,7 @@ import LogoutButton from "@/components/auth/LogoutButton";
 import InputComponent from "@/components/InputComponent";
 import { AddressProvider } from "./context/AddressContext";
 import { UserProvider } from "./context/UserContext";
+import UserProfile from "@/components/UserProfile";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -74,6 +75,11 @@ export default function RootLayout({
                     <li className="-ml-2">
                       <div className="flex items-center lg:text-lg gap-4 mr-4 relative hover:cursor-pointer">
                         <LogoutButton></LogoutButton>
+                      </div>
+                    </li>
+                    <li className="-ml-2">
+                      <div className="flex items-center lg:text-lg gap-4 mr-4 relative hover:cursor-pointer">
+                        <UserProfile></UserProfile>
                       </div>
                     </li>
                   </ul>

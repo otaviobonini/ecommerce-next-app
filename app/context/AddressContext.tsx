@@ -18,6 +18,7 @@ import {
   createAddress as createAddressService,
   deleteAddress as deleteAddressService,
   editAddress as editAddressService,
+  setDefaultAddress as setDefaultAddressService,
 } from "../services/address.service";
 
 interface AddressContextType {
@@ -29,6 +30,7 @@ interface AddressContextType {
     data: EditAddressInput,
     token: string,
   ) => Promise<Address>;
+  setDefaultAddress: (addressId: number, token: string) => Promise<void>;
 }
 
 const AddressContext = createContext<AddressContextType | null>(null);
@@ -53,6 +55,15 @@ export function AddressProvider({ children }: { children: ReactNode }) {
     return res;
   }
 
+  async function setDefaultAddress(addressId: number, token: string) {
+    await setDefaultAddressService(addressId, token);
+    setAddresses((prev) =>
+      prev.map((address) => ({
+        ...address,
+        isDefault: address.addressId === addressId,
+      })),
+    );
+  }
   async function editAddress(
     addressId: number,
     data: EditAddressInput,
@@ -74,7 +85,13 @@ export function AddressProvider({ children }: { children: ReactNode }) {
 
   return (
     <AddressContext.Provider
-      value={{ addresses, createAddress, deleteAddress, editAddress }}
+      value={{
+        addresses,
+        createAddress,
+        deleteAddress,
+        editAddress,
+        setDefaultAddress,
+      }}
     >
       {children}
     </AddressContext.Provider>
