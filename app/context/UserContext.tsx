@@ -29,9 +29,38 @@ interface Address {
 }
 
 interface Order {
-  id: number;
-  status: string;
+  orderId: number;
+  status: "PENDING" | "PAID" | "ONGOING" | "DELIVERED" | "CANCELLED";
   total: number;
+  createdAt: string;
+  address: OrderAddress;
+  orderItems: OrderItem[];
+}
+
+interface OrderAddress {
+  addressId: number;
+  street: string;
+  city: string;
+  state: string;
+  zipCode: string;
+}
+
+interface OrderItem {
+  orderItemId: number;
+  quantity: number;
+  priceAtTime: number;
+  product: Product;
+}
+
+interface Product {
+  productId: number;
+  productName: string;
+  productPrice: number;
+  images: ProductImage[];
+}
+
+interface ProductImage {
+  url: string;
 }
 
 interface UserContextType {
