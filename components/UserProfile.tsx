@@ -19,7 +19,7 @@ export default function UserProfile() {
     <div>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="hover:cursor-pointer relative lg:w-15 lg:h-15 h-10 w-10 text-center content-center-safe bg-purple-600 rounded-full"
+        className="hover:cursor-pointer relative lg:w-12 lg:h-12 h-10 w-10 text-center content-center-safe bg-purple-600 rounded-full"
       >
         {userLogo}
       </button>
@@ -36,6 +36,14 @@ export default function UserProfile() {
           <Link onClick={() => setIsOpen(false)} href={"/profile"}>
             Perfil
           </Link>
+          {user?.role === "ADMIN" && (
+            <>
+              <hr className="border-gray-300"></hr>
+              <Link onClick={() => setIsOpen(false)} href={"/admin"}>
+                Admin
+              </Link>
+            </>
+          )}
         </div>
       )}
     </div>

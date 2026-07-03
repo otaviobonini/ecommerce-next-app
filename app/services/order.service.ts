@@ -79,3 +79,30 @@ export async function getUserOrders(
   const json = await res.json();
   return OrdersResponseSchema.parse(json);
 }
+
+// Admin routes
+
+export async function getOrders(
+  token: string,
+  offset?: number,
+  limit?: number,
+): Promise<Order[]> {
+  const res = await fetch(
+    `${API_URL}/orders?offset=${offset ?? 0}&limit=${limit ?? 20}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+
+  if (!res.ok) {
+    const error = await res.json().catch(() => null);
+    throw new Error(error?.message ?? "Erro ao buscar pedidos");
+  }
+
+  const json = await res.json();
+  return OrdersResponseSchema.parse(json);
+}
