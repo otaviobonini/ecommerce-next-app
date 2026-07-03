@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export interface ProductImage {
   imageId: number;
   productId: number;
@@ -32,3 +34,14 @@ export interface Category {
   name: string;
   categoryImage: string | null;
 }
+
+export const EditProductSchema = z.object({
+  productName: z.string().optional(),
+  productPrice: z.coerce.number().positive().optional(),
+  productDescription: z.string().optional(),
+  stock: z.coerce.number().int().min(0).optional(),
+  isFeatured: z.boolean().optional(),
+  categoryId: z.coerce.number().int().positive().optional().nullable(),
+});
+
+export type EditProductData = z.infer<typeof EditProductSchema>;
