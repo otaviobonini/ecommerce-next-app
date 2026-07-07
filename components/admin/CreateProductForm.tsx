@@ -1,28 +1,59 @@
 "use client";
 
+import { useAdmin } from "@/app/context/AdminContext";
 import { faPhotoFilm } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { useState } from "react";
+
+type ImageSlot = {
+  file: File | null;
+  preview: string | null;
+};
+
+const EMPTY_SLOT: ImageSlot = { file: null, preview: null };
 
 export default function CreateProductForm() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [initialStock, setInitialStock] = useState("");
   const [price, setPrice] = useState("");
-  const [image, setImage] = useState<File | null>(null);
-  const [preview, setPreview] = useState();
+  const [category, setCategory] = useState<string | undefined>(undefined);
+  const [images, setImages] = useState<ImageSlot[]>([]);
+
   const [featured, setFeatured] = useState(false);
-  function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0] ?? null;
-    setImage(file);
-    setPreview(file ? URL.createObjectURL(file) : null);
-  }
-  function handleSubmit() {
-    return;
+  const {
+    createProduct,
+    categories,
+    uploadProductImage,
+    setPrimaryProductImage,
+  } = useAdmin();
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+
+    const product = await createProduct({
+      productName: name,
+      productPrice: Number(price),
+      stock: Number(initialStock),
+      isFeatured: featured,
+      productDescription: description,
+      categoryId: Number(category),
+    });
+
+    for (let i = 0; i < images.length; i++) {
+      const uploadedImage = await uploadProductImage(
+        product.productId,
+        images[i].file,
+      );
+
+      if (i === 0) {
+        await setPrimaryProductImage(product.productId, uploadedImage.imageId);
+      }
+    }
   }
   return (
-    <div>
+    <div className="p-8 flex flex-col">
       {" "}
       <h2 className="text-xl text-center ">Novo Produto</h2>
       <form onSubmit={handleSubmit} className="flex flex-col  gap-5 mt-5">
@@ -118,28 +149,62 @@ export default function CreateProductForm() {
             Produto destaque
           </label>
         </div>
+
+        <select
+          onChange={(e) => setCategory(e.target.value)}
+          id="categories"
+          value={category}
+          className="block w-full px-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body"
+        >
+          <option selected>Escolha a categoria do produto</option>
+          {categories.map((category) => (
+            <option key={category.categoryId} value={category.categoryId}>
+              {category.name}
+            </option>
+          ))}
+        </select>
         <input
-          className=""
-          onChange={(e) => handleImageChange(e)}
           type="file"
-          accept=".jpg, .jpeg, .png"
-        ></input>
-        {preview ? (
-          <Image
-            alt="Prévia do produto"
-            src={preview}
-            width={400}
-            height={400}
-            className="rounded-md object-cover"
-          />
-        ) : (
-          <div className="flex items-center justify-center rounded-md mx-auto bg-gray-300 h-[200px] w-[400px]">
-            <FontAwesomeIcon
-              icon={faPhotoFilm}
-              className="text-5xl text-gray-500"
-            />
-          </div>
-        )}
+          disabled={images.length >= 3}
+          accept=".jpg,.jpeg,.png"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+
+            if (!file) return;
+
+            setImages((prev) => [
+              ...prev,
+              {
+                file,
+                preview: URL.createObjectURL(file),
+              },
+            ]);
+          }}
+        />
+        <h1>Escolha até 3 fotos para seu produto.</h1>
+        <div className="flex gap-4">
+          {images.map((image, index) => (
+            <div
+              key={index}
+              className="relative h-28 w-28 overflow-hidden rounded-lg border border-gray-300 bg-gray-100 shadow-sm"
+            >
+              <Image
+                src={image.preview!}
+                alt={`Preview ${index + 1}`}
+                fill
+                className="object-cover"
+              />
+
+              <button
+                type="button"
+                className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-black/70 text-white transition hover:bg-red-600"
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+        </div>
+        <button type="submit">Enviar</button>
       </form>
     </div>
   );
