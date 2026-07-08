@@ -4,6 +4,7 @@ import { useAdmin } from "@/app/context/AdminContext";
 import { getPrimaryImage } from "@/app/services/product.service";
 import CreateProductForm from "@/components/admin/CreateProductForm";
 import AdminModal from "@/components/AdminModal";
+import { Product } from "@/schemas/product";
 import {
   faTrash,
   faStar,
@@ -17,8 +18,22 @@ import Link from "next/link";
 import { useState } from "react";
 
 export default function ProductsPage() {
-  const { products, categories, loadingProducts, deleteProduct } = useAdmin();
+  const {
+    products,
+    categories,
+    loadingProducts,
+    deleteProduct,
+    updateProduct,
+  } = useAdmin();
   const [isOpen, setIsOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+
+  function handleEdit(productId: number) {
+    const product = products.find((p) => p.productId === productId);
+    if (!product) return;
+    setIsOpen(true);
+    setEditingProduct(product);
+  }
 
   return (
     <div className="gap-6 p-4 flex flex-col max-w-5xl mx-auto">
@@ -101,7 +116,10 @@ export default function ProductsPage() {
                     <FontAwesomeIcon icon={faTrash} />
                     Remover
                   </button>
-                  <button className="flex-1 flex items-center justify-center gap-1 h-9 rounded-md border border-blue-200 bg-blue-50 text-blue-600 text-sm hover:bg-blue-100 transition-colors cursor-pointer">
+                  <button
+                    onClick={() => handleEdit(product.productId)}
+                    className="flex-1 flex items-center justify-center gap-1 h-9 rounded-md border border-blue-200 bg-blue-50 text-blue-600 text-sm hover:bg-blue-100 transition-colors cursor-pointer"
+                  >
                     <FontAwesomeIcon icon={faEdit} />
                     Editar
                   </button>
@@ -112,7 +130,10 @@ export default function ProductsPage() {
         </ul>
       )}
       <AdminModal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        <CreateProductForm></CreateProductForm>
+        <CreateProductForm
+          editingProduct={editingProduct}
+          onSuccess={() => setIsOpen(false)}
+        ></CreateProductForm>
       </AdminModal>
     </div>
   );

@@ -8,7 +8,12 @@ import {
   useState,
   useCallback,
 } from "react";
-import { Category, EditProductData, Product } from "@/schemas/product";
+import {
+  Category,
+  EditProductData,
+  Product,
+  ProductImage,
+} from "@/schemas/product";
 import { Order } from "@/schemas/order.schema";
 import { useAuth } from "./AuthContext";
 import { useUser } from "./UserContext";
@@ -50,7 +55,7 @@ interface AdminContextType {
   createProduct: (data: NewProductInput) => Promise<Product>;
   updateProduct: (productId: number, data: EditProductData) => Promise<Product>;
   deleteProduct: (productId: number) => Promise<void>;
-  uploadProductImage: (productId: number, file: File) => Promise<void>;
+  uploadProductImage: (productId: number, file: File) => Promise<ProductImage>;
   deleteProductImage: (productId: number, imageId: number) => Promise<void>;
   setPrimaryProductImage: (productId: number, imageId: number) => Promise<void>;
 
@@ -99,8 +104,11 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   async function createProduct(data: NewProductInput) {
     if (!token) throw new Error("Sem token de autenticação");
     const product = await createProductService(token, data);
-    setProducts((prev) => [product, ...prev]);
-    return product;
+    // A API pode não devolver "images" na criação; normalizamos pra evitar
+    // undefined em qualquer lugar que espere product.images (ex: getPrimaryImage)
+    const normalized: Product = { ...product, images: product.images ?? [] };
+    setProducts((prev) => [normalized, ...prev]);
+    return normalized;
   }
 
   async function updateProduct(productId: number, data: EditProductData) {
@@ -123,9 +131,12 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     const image = await uploadProductImageService(token, productId, file);
     setProducts((prev) =>
       prev.map((p) =>
-        p.productId === productId ? { ...p, images: [...p.images, image] } : p,
+        p.productId === productId
+          ? { ...p, images: [...(p.images ?? []), image] }
+          : p,
       ),
     );
+    return image;
   }
 
   async function deleteProductImage(productId: number, imageId: number) {
@@ -134,7 +145,10 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     setProducts((prev) =>
       prev.map((p) =>
         p.productId === productId
-          ? { ...p, images: p.images.filter((img) => img.imageId !== imageId) }
+          ? {
+              ...p,
+              images: (p.images ?? []).filter((img) => img.imageId !== imageId),
+            }
           : p,
       ),
     );
@@ -148,7 +162,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         p.productId === productId
           ? {
               ...p,
-              images: p.images.map((img) => ({
+              images: (p.images ?? []).map((img) => ({
                 ...img,
                 isPrimary: img.imageId === imageId,
               })),

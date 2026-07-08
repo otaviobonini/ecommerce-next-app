@@ -1,61 +1,134 @@
 "use client";
 
 import { useAdmin } from "@/app/context/AdminContext";
-import { faPhotoFilm } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Image from "next/image";
-import { useState } from "react";
+
+import { Product, ProductImage } from "@/schemas/product";
+import { useEffect, useState } from "react";
 
 type ImageSlot = {
   file: File | null;
   preview: string | null;
 };
 
-const EMPTY_SLOT: ImageSlot = { file: null, preview: null };
+interface CreateProductFormProps {
+  editingProduct?: Product | null;
+  onSuccess: () => void;
+}
 
-export default function CreateProductForm() {
+export default function CreateProductForm({
+  editingProduct,
+  onSuccess,
+}: CreateProductFormProps) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [initialStock, setInitialStock] = useState("");
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState<string | undefined>(undefined);
   const [images, setImages] = useState<ImageSlot[]>([]);
+  const [productImages, setProductImages] = useState<ProductImage[]>();
+
+  const [imagesToRemove, setImagesToRemove] = useState<number[]>([]);
 
   const [featured, setFeatured] = useState(false);
+
+  function toggleRemoveExistingImage(imageId: number) {
+    setImagesToRemove((prev) => [...prev, imageId]);
+  }
+
   const {
     createProduct,
     categories,
     uploadProductImage,
+    updateProduct,
     setPrimaryProductImage,
+    deleteProductImage,
   } = useAdmin();
+
+  useEffect(() => {
+    if (!editingProduct) {
+      setName("");
+      setDescription("");
+      setInitialStock("");
+      setPrice("");
+      setCategory(undefined);
+      setFeatured(false);
+      setProductImages([]);
+      setImages([]);
+      setImagesToRemove([]);
+      return;
+    }
+    if (editingProduct) {
+      setName(editingProduct.productName ?? "");
+      setDescription(editingProduct.productDescription ?? "");
+      setInitialStock(String(editingProduct.stock ?? ""));
+      setPrice(String(editingProduct.productPrice ?? ""));
+      setCategory(
+        editingProduct.categoryId
+          ? String(editingProduct.categoryId)
+          : undefined,
+      );
+      setFeatured(editingProduct.isFeatured ?? false);
+      setProductImages(editingProduct.images ?? []);
+    }
+  }, [editingProduct]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    const product = await createProduct({
-      productName: name,
-      productPrice: Number(price),
-      stock: Number(initialStock),
-      isFeatured: featured,
-      productDescription: description,
-      categoryId: Number(category),
-    });
+    if (!editingProduct) {
+      const product = await createProduct({
+        productName: name,
+        productPrice: Number(price),
+        stock: Number(initialStock),
+        isFeatured: featured,
+        productDescription: description,
+        categoryId: Number(category),
+      });
 
-    for (let i = 0; i < images.length; i++) {
-      const uploadedImage = await uploadProductImage(
-        product.productId,
-        images[i].file,
-      );
+      for (let i = 0; i < images.length; i++) {
+        const uploadedImage = await uploadProductImage(
+          product.productId,
+          images[i].file!,
+        );
 
-      if (i === 0) {
-        await setPrimaryProductImage(product.productId, uploadedImage.imageId);
+        if (i === 0) {
+          await setPrimaryProductImage(
+            product.productId,
+            uploadedImage.imageId,
+          );
+        }
+        onSuccess();
       }
+    } else {
+      const product = await updateProduct(editingProduct.productId, {
+        productName: name,
+        productPrice: Number(price),
+        stock: Number(initialStock),
+        isFeatured: featured,
+        productDescription: description,
+        categoryId: Number(category),
+      });
+      for (let i = 0; i < imagesToRemove.length; i++) {
+        const deletedImage = await deleteProductImage(
+          editingProduct.productId,
+          imagesToRemove[i],
+        );
+      }
+      for (let i = 0; i < images.length; i++) {
+        const uploadedImage = await uploadProductImage(
+          product.productId,
+          images[i].file!,
+        );
+      }
+      onSuccess();
     }
   }
   return (
     <div className="p-8 flex flex-col">
       {" "}
-      <h2 className="text-xl text-center ">Novo Produto</h2>
+      <h2 className="text-xl text-center ">
+        {editingProduct ? "Editar produto" : "Novo Produto"}
+      </h2>
       <form onSubmit={handleSubmit} className="flex flex-col  gap-5 mt-5">
         <div className="relative">
           <input
@@ -183,19 +256,50 @@ export default function CreateProductForm() {
         />
         <h1>Escolha até 3 fotos para seu produto.</h1>
         <div className="flex gap-4">
+          {productImages?.map((image) => {
+            const marcadaParaRemover = imagesToRemove.includes(image.imageId);
+            return (
+              <div
+                key={image.imageId}
+                className={`relative h-28 w-28 overflow-hidden rounded-lg border bg-gray-100 shadow-sm ${
+                  marcadaParaRemover ? "hidden" : "border-gray-300"
+                }`}
+              >
+                <img
+                  src={image.url}
+                  alt="Imagem do produto"
+                  className="object-cover w-full h-full"
+                />
+                {image.isPrimary && !marcadaParaRemover && (
+                  <span className="absolute left-1 top-1 bg-yellow-500 text-white text-[10px] px-1.5 py-0.5 rounded">
+                    Principal
+                  </span>
+                )}
+                <button
+                  onClick={() => toggleRemoveExistingImage(image.imageId)}
+                  type="button"
+                  className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-black/70 text-white transition hover:bg-red-600"
+                >
+                  ✕
+                </button>
+              </div>
+            );
+          })}
           {images.map((image, index) => (
             <div
               key={index}
               className="relative h-28 w-28 overflow-hidden rounded-lg border border-gray-300 bg-gray-100 shadow-sm"
             >
-              <Image
+              <img
                 src={image.preview!}
                 alt={`Preview ${index + 1}`}
-                fill
                 className="object-cover"
               />
 
               <button
+                onClick={() =>
+                  setImages((prev) => prev.filter((_, i) => i !== index))
+                }
                 type="button"
                 className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-black/70 text-white transition hover:bg-red-600"
               >

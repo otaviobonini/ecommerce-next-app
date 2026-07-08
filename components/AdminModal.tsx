@@ -31,9 +31,21 @@ export default function AdminModal({
         className="bg-black/50 z-50 items-center flex justify-center fixed inset-0"
         onClick={onClose}
       >
-        <div className="bg-white rounded-lg   z-60 p-6 shadow-xl">
-          <div className="flex" onClick={(e) => e.stopPropagation()}>
-            {children}
+        <div className="bg-white rounded-lg z-60 p-6 shadow-xl min-w-[320px]">
+          <div
+            className="flex flex-col gap-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div>{children}</div>
+
+            <div className="flex justify-end  ">
+              <button
+                onClick={onClose}
+                className="px-4 hover:cursor-pointer py-2 rounded-md text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 hover:text-gray-800 transition-colors duration-150 active:scale-95"
+              >
+                Cancelar
+              </button>
+            </div>
           </div>
         </div>
       </div>
