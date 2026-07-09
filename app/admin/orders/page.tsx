@@ -2,9 +2,14 @@
 
 import { useAdmin } from "@/app/context/AdminContext";
 import Image from "next/image";
+import { useState } from "react";
 
 export default function OrdersPage() {
-  const { orders } = useAdmin();
+  const { orders, changeOrderStatus } = useAdmin();
+  const [isEditing, setIsEditing] = useState<number | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<
+    Record<number, keyof typeof statusMap>
+  >({});
 
   const statusMap = {
     PENDING: "Pendente",
@@ -21,6 +26,14 @@ export default function OrdersPage() {
     DELIVERED: "bg-purple-100 text-purple-800",
     CANCELLED: "bg-red-100 text-red-800",
   } as const;
+
+  async function handleStatusChange(
+    orderId: number,
+    newStatus: keyof typeof statusMap,
+  ) {
+    await changeOrderStatus(orderId, newStatus);
+    setIsEditing(null);
+  }
 
   return (
     <div className="flex flex-col items-center p-6">
@@ -40,15 +53,70 @@ export default function OrdersPage() {
                   <p className="text-lg font-semibold">
                     Pedido #{order.orderId}
                   </p>
+                  {isEditing === order.orderId ? (
+                    <select
+                      value={selectedStatus[order.orderId]}
+                      onChange={(e) =>
+                        setSelectedStatus((prev) => ({
+                          ...prev,
+                          [order.orderId]: e.target
+                            .value as keyof typeof statusMap,
+                        }))
+                      }
+                      className="mt-2 rounded-md border p-2"
+                    >
+                      {Object.entries(statusMap).map(([key, value]) => (
+                        <option key={key} value={key}>
+                          {value}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <span
+                      className={`mt-2 inline-block rounded-full px-3 py-1 text-sm font-medium ${statusStyles[order.status]}`}
+                    >
+                      {statusMap[order.status]}
+                    </span>
+                  )}
+                  {isEditing === order.orderId && (
+                    <div className="mt-3 flex gap-2">
+                      <button
+                        onClick={() => {
+                          handleStatusChange(
+                            order.orderId,
+                            selectedStatus[order.orderId],
+                          );
+                        }}
+                        className="rounded bg-green-600 px-3 py-2 text-white hover:bg-green-700"
+                      >
+                        Salvar
+                      </button>
 
-                  <span
-                    className={`mt-2 inline-block rounded-full px-3 py-1 text-sm font-medium ${statusStyles[order.status]}`}
-                  >
-                    {statusMap[order.status]}
-                  </span>
-
+                      <button
+                        onClick={() => setIsEditing(null)}
+                        className="rounded bg-gray-300 px-3 py-2 hover:bg-gray-400"
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  )}
+                  {isEditing !== order.orderId && (
+                    <button
+                      onClick={() => {
+                        setIsEditing(order.orderId);
+                        setSelectedStatus((prev) => ({
+                          ...prev,
+                          [order.orderId]: order.status,
+                        }));
+                      }}
+                      className="mt-2 ml-4 hover:cursor-pointer rounded-2xl  bg-blue-500 p-2  text-white hover:bg-blue-600"
+                    >
+                      Atualizar
+                    </button>
+                  )}
                   <p className="mt-2 text-sm text-gray-500">
-                    <strong>Cliente:</strong> {order.name}
+                    <strong>Cliente:</strong> {order.user.username} (
+                    {order.user.email})
                   </p>
 
                   <p className="text-sm text-gray-500">
@@ -76,13 +144,15 @@ export default function OrdersPage() {
                     className="flex items-center justify-between border-t pt-4"
                   >
                     <div className="flex items-center gap-4">
-                      <Image
-                        src={item.product.images[0].url}
-                        alt={item.product.productName}
-                        width={80}
-                        height={80}
-                        className="rounded-lg object-cover"
-                      />
+                      {item.product.images[0] && (
+                        <Image
+                          src={item.product.images[0].url}
+                          alt={item.product.productName}
+                          width={80}
+                          height={80}
+                          className="rounded-lg object-cover"
+                        />
+                      )}
 
                       <div>
                         <p className="font-medium">

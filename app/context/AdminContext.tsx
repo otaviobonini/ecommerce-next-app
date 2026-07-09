@@ -14,7 +14,7 @@ import {
   Product,
   ProductImage,
 } from "@/schemas/product";
-import { Order } from "@/schemas/order.schema";
+import { AdminOrder, Order, OrderStatus } from "@/schemas/order.schema";
 import { useAuth } from "./AuthContext";
 import { useUser } from "./UserContext";
 import {
@@ -33,7 +33,10 @@ import {
   uploadCategoryImage as uploadCategoryImageService,
 } from "../services/categories.service";
 import { getCategories as getCategoriesService } from "../services/product.service";
-import { getOrders as getOrdersService } from "../services/order.service";
+import {
+  getOrders as getOrdersService,
+  updateOrderStatus as updateOrderStatusService,
+} from "../services/order.service";
 
 interface NewProductInput {
   productName: string;
@@ -73,9 +76,11 @@ interface AdminContextType {
   uploadCategoryImage: (categoryId: number, file: File) => Promise<void>;
 
   // Pedidos
-  orders: Order[];
+
+  orders: AdminOrder[];
   loadingOrders: boolean;
   fetchOrders: (offset?: number, limit?: number) => Promise<void>;
+  changeOrderStatus: (orderId: number, newStatus: OrderStatus) => Promise<void>;
 }
 
 const AdminContext = createContext<AdminContextType | null>(null);
@@ -91,7 +96,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(false);
 
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(false);
 
   // ---------- Produtos ----------
@@ -236,6 +241,8 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       try {
         const res = await getOrdersService(token, offset, limit);
         setOrders(res);
+      } catch (err) {
+        console.error("Erro ao buscar pedidos:", err);
       } finally {
         setLoadingOrders(false);
       }
@@ -243,6 +250,27 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     [token],
   );
 
+  async function changeOrderStatus(orderId: number, newStatus: OrderStatus) {
+    if (!token) throw new Error("Sem token de autenticação");
+
+    const updatedOrder = await updateOrderStatusService(
+      token,
+      orderId,
+      newStatus,
+    );
+
+    setOrders((prev) =>
+      prev.map((order) =>
+        order.orderId === orderId
+          ? {
+              ...order,
+              status: updatedOrder.status,
+              updatedAt: updatedOrder.updatedAt,
+            }
+          : order,
+      ),
+    );
+  }
   // Carrega os dados de admin assim que soubermos que o usuário é ADMIN
   useEffect(() => {
     if (!token || !isAdmin) return;
@@ -264,7 +292,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         uploadProductImage,
         deleteProductImage,
         setPrimaryProductImage,
-
+        changeOrderStatus,
         categories,
         loadingCategories,
         fetchCategories,
