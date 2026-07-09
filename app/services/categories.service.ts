@@ -7,7 +7,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
 export async function createCategory(
   token: string,
   data: {
-    categoryName: string;
+    name: string;
   },
 ): Promise<Category> {
   const res = await fetch(`${API_URL}/categories`, {
@@ -47,7 +47,7 @@ export async function uploadCategoryImage(
   const formData = new FormData();
   formData.append("image", file);
 
-  const res = await fetch(`${API_URL}/categories/${categoryId}/images`, {
+  const res = await fetch(`${API_URL}/categories/${categoryId}/image`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -56,7 +56,32 @@ export async function uploadCategoryImage(
   });
 
   if (!res.ok) {
-    throw new Error("Erro ao enviar imagem da categoria");
+    throw new Error(`Erro ao enviar imagem da categoria`);
+  }
+
+  return res.json();
+}
+
+export async function editCategories({
+  data,
+  categoryId,
+  token,
+}: {
+  data: Partial<Category>;
+  categoryId: number;
+  token: string;
+}): Promise<Category> {
+  const res = await fetch(`${API_URL}/categories/${categoryId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Erro ao editar categoria ${categoryId}: ${res.status}`);
   }
 
   return res.json();

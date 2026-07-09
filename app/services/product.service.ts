@@ -68,10 +68,9 @@ export async function getFeaturedProducts(): Promise<Product[]> {
 
 /** Retorna a URL da imagem primária, ou uma imagem fallback */
 export function getPrimaryImage(product: Product): string {
-  const primary = product.images.find((img) => img.isPrimary);
-  return (
-    primary?.url ?? product.images[0]?.url ?? "https://picsum.photos/400/400"
-  );
+  const images = product.images ?? [];
+  const primary = images.find((img) => img.isPrimary);
+  return primary?.url ?? images[0]?.url;
 }
 
 // Rotas de ADMIN

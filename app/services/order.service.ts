@@ -1,7 +1,10 @@
 import {
+  AdminOrder,
+  AdminOrdersResponseSchema,
   CreateOrderResponseSchema,
   OrderSchema,
   OrdersResponseSchema,
+  OrderStatus,
   type CreateOrderInput,
   type CreateOrderResponse,
   type Order,
@@ -86,7 +89,7 @@ export async function getOrders(
   token: string,
   offset?: number,
   limit?: number,
-): Promise<Order[]> {
+): Promise<AdminOrder[]> {
   const res = await fetch(
     `${API_URL}/orders?offset=${offset ?? 0}&limit=${limit ?? 20}`,
     {
@@ -104,5 +107,28 @@ export async function getOrders(
   }
 
   const json = await res.json();
-  return OrdersResponseSchema.parse(json);
+  return AdminOrdersResponseSchema.parse(json);
+}
+
+export async function updateOrderStatus(
+  token: string,
+  orderId: number,
+  status: OrderStatus,
+) {
+  const res = await fetch(`${API_URL}/orders/${orderId}/status`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ status }),
+  });
+
+  if (!res.ok) {
+    const error = await res.json().catch(() => null);
+    throw new Error(error?.message ?? "Erro ao atualizar status do pedido");
+  }
+
+  const json = await res.json();
+  return OrderSchema.parse(json);
 }
