@@ -29,6 +29,7 @@ import {
 import {
   createCategory as createCategoryService,
   deleteCategory as deleteCategoryService,
+  editCategories as editCategoryService,
   uploadCategoryImage as uploadCategoryImageService,
 } from "../services/categories.service";
 import { getCategories as getCategoriesService } from "../services/product.service";
@@ -44,7 +45,7 @@ interface NewProductInput {
 }
 
 interface NewCategoryInput {
-  categoryName: string;
+  name: string;
 }
 
 interface AdminContextType {
@@ -64,6 +65,10 @@ interface AdminContextType {
   loadingCategories: boolean;
   fetchCategories: () => Promise<void>;
   createCategory: (data: NewCategoryInput) => Promise<Category>;
+  editCategory: (
+    categoryId: number,
+    data: { name: string },
+  ) => Promise<Category>;
   deleteCategory: (categoryId: number) => Promise<void>;
   uploadCategoryImage: (categoryId: number, file: File) => Promise<void>;
 
@@ -190,6 +195,18 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     setCategories((prev) => [...prev, category]);
     return category;
   }
+  async function editCategory(categoryId: number, data: { name: string }) {
+    if (!token) throw new Error("Sem token de autenticação");
+    const updatedCategory = await editCategoryService({
+      token,
+      categoryId,
+      data,
+    });
+    setCategories((prev) =>
+      prev.map((c) => (c.categoryId === categoryId ? updatedCategory : c)),
+    );
+    return updatedCategory;
+  }
 
   async function deleteCategory(categoryId: number) {
     if (!token) throw new Error("Sem token de autenticação");
@@ -243,6 +260,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         createProduct,
         updateProduct,
         deleteProduct,
+        editCategory,
         uploadProductImage,
         deleteProductImage,
         setPrimaryProductImage,

@@ -56,7 +56,32 @@ export async function uploadCategoryImage(
   });
 
   if (!res.ok) {
-    throw new Error("Erro ao enviar imagem da categoria");
+    throw new Error(`Erro ao enviar imagem da categoria`);
+  }
+
+  return res.json();
+}
+
+export async function editCategories({
+  data,
+  categoryId,
+  token,
+}: {
+  data: Partial<Category>;
+  categoryId: number;
+  token: string;
+}): Promise<Category> {
+  const res = await fetch(`${API_URL}/categories/${categoryId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Erro ao editar categoria ${categoryId}: ${res.status}`);
   }
 
   return res.json();
