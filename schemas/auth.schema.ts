@@ -30,21 +30,16 @@ export const RegisterResponseSchema = z.object({
   email: z.string().email(),
 });
 
-// POST /auth/login -> 200 SafeUserWithToken
 export const LoginResponseSchema = z.object({
   id: z.number(),
   email: z.string().email(),
   username: z.string(),
   token: z.string(),
-  refreshToken: z.string(),
 });
 
-// POST /auth/refresh-token -> 200 { token, refreshToken }
 export const RefreshTokenResponseSchema = z.object({
   token: z.string(),
-  refreshToken: z.string(),
 });
-
 // JWT decodificado (payload), caso precise ler role/id no front
 export const JwtPayloadSchema = z.object({
   id: z.number().int().positive(),
