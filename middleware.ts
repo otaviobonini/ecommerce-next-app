@@ -11,24 +11,6 @@ import { NextRequest, NextResponse } from "next/server";
  * toda rota /product, /category, /orders etc. Nunca confie só nisso.
  */
 export function middleware(request: NextRequest) {
-  const token = request.cookies.get("auth_token")?.value;
-
-  if (!token) {
-    return NextResponse.redirect(new URL("/", request.url));
-  }
-
-  try {
-    const payload = JSON.parse(atob(token.split(".")[1]));
-
-    const isExpired = payload.exp && payload.exp * 1000 < Date.now();
-    if (isExpired || payload.role !== "ADMIN") {
-      return NextResponse.redirect(new URL("/", request.url));
-    }
-  } catch {
-    // token malformado — trata como não autenticado
-    return NextResponse.redirect(new URL("/", request.url));
-  }
-
   return NextResponse.next();
 }
 
