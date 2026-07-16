@@ -104,6 +104,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(TOKEN_KEY, authToken);
     localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
     localStorage.setItem(USER_KEY, JSON.stringify(authUser));
+    // Cookie legível pelo middleware (não é httpOnly, então não é
+    // 100% à prova de XSS, mas resolve a leitura no servidor/edge)
+    document.cookie = `auth_token=${authToken}; path=/; max-age=${60 * 60 * 24 * 7}; samesite=lax`;
     setRefreshToken(refreshToken);
     setToken(authToken);
     setUser(authUser);
@@ -129,6 +132,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(REFRESH_TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
+    document.cookie = "auth_token=; path=/; max-age=0";
     setToken(null);
     setUser(null);
   }
