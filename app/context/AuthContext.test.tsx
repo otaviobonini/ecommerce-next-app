@@ -7,6 +7,8 @@ vi.mock("../services/auth.service", () => ({
   login: vi.fn(),
   register: vi.fn(),
   logout: vi.fn(),
+  refreshAccessToken: vi.fn().mockRejectedValue(new Error("Sessão expirada")),
+  getMe: vi.fn(),
 }));
 
 // gera um JWT "fake" válido o suficiente pro AuthContext decodificar
@@ -34,14 +36,19 @@ describe("AuthContext", () => {
     expect(result.current.user).toBeNull();
   });
 
-  it("Deve logar e salvar token/usuário no contexto e no localStorage", async () => {
+  it("Deve logar e salvar token/usuário no contexto e a role no localStorage", async () => {
     const fakeToken = makeFakeToken();
     vi.mocked(authService.login).mockResolvedValue({
       id: 1,
       email: "user@email.com",
       username: "user",
       token: fakeToken,
-      refreshToken: "refresh-token-123",
+    });
+    vi.mocked(authService.getMe).mockResolvedValue({
+      userId: 1,
+      email: "user@email.com",
+      username: "user",
+      role: "USER",
     });
 
     const { result } = renderHook(() => useAuth(), { wrapper: AuthProvider });
@@ -60,17 +67,24 @@ describe("AuthContext", () => {
       email: "user@email.com",
       username: "user",
     });
-    expect(localStorage.getItem("auth_token")).toBe(fakeToken);
+    // o access token nunca é persistido em disco (fica só em estado do React);
+    // apenas a role é gravada no localStorage, para o gate de UI do /admin
+    expect(localStorage.getItem("role")).toBe("USER");
   });
 
-  it("Deve deslogar e limpar token/usuário do contexto e do localStorage", async () => {
+  it("Deve deslogar e limpar token/usuário do contexto e a role do localStorage", async () => {
     const fakeToken = makeFakeToken();
     vi.mocked(authService.login).mockResolvedValue({
       id: 1,
       email: "user@email.com",
       username: "user",
       token: fakeToken,
-      refreshToken: "refresh-token-123",
+    });
+    vi.mocked(authService.getMe).mockResolvedValue({
+      userId: 1,
+      email: "user@email.com",
+      username: "user",
+      role: "USER",
     });
     vi.mocked(authService.logout).mockResolvedValue(undefined);
 
@@ -90,6 +104,6 @@ describe("AuthContext", () => {
 
     expect(result.current.token).toBeNull();
     expect(result.current.user).toBeNull();
-    expect(localStorage.getItem("auth_token")).toBeNull();
+    expect(localStorage.getItem("role")).toBeNull();
   });
 });

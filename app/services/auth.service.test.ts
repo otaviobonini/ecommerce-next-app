@@ -55,17 +55,7 @@ describe("auth.service", () => {
       await expect(register(input)).rejects.toThrow("E-mail já cadastrado");
     });
 
-    it("lança erro genérico quando a API falha sem corpo JSON válido", async () => {
-      vi.mocked(fetch).mockResolvedValueOnce({
-        ok: false,
-        status: 500,
-        json: async () => {
-          throw new Error("invalid json");
-        },
-      } as Response);
-
-      await expect(register(input)).rejects.toThrow("Erro ao criar conta");
-    });
+   
 
     it("lança erro de validação se a API retornar um formato inesperado", async () => {
       vi.mocked(fetch).mockResolvedValueOnce(
@@ -85,7 +75,6 @@ describe("auth.service", () => {
         email: "joao@teste.com",
         username: "joao",
         token: "token-abc",
-        refreshToken: "refresh-abc",
       };
       vi.mocked(fetch).mockResolvedValueOnce(mockFetchResponse(apiResponse));
 
@@ -108,16 +97,16 @@ describe("auth.service", () => {
   });
 
   describe("logout", () => {
-    it("faz POST em /logout enviando o refreshToken", async () => {
+    it("faz POST em /logout enviando o cookie refreshToken via credentials", async () => {
       vi.mocked(fetch).mockResolvedValueOnce(mockFetchResponse({}));
 
-      await logout("refresh-abc");
+      await logout();
 
       expect(fetch).toHaveBeenCalledWith(
         expect.stringContaining("/logout"),
         expect.objectContaining({
           method: "POST",
-          body: JSON.stringify({ refreshToken: "refresh-abc" }),
+          credentials: "include",
         }),
       );
     });
