@@ -1,20 +1,50 @@
 import { NextRequest, NextResponse } from "next/server";
 
-/**
- * Protege as rotas /admin/*.
- * Lê o token do cookie "auth_token" (setado pelo AuthContext no login/logout)
- * e decodifica o payload do JWT para checar a role.
- *
- * IMPORTANTE: isso é só uma barreira de UX (evita que usuários comuns
- * cheguem na tela de admin). A autorização de verdade continua sendo
- * responsabilidade do backend, que deve validar o token e a role em
- * toda rota /product, /category, /orders etc. Nunca confie só nisso.
- */
-export function middleware(request: NextRequest) {
-  return NextResponse.next();
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+
+// Gate server-side de /admin: o refreshToken é httpOnly (invisível pro JS do
+// browser), mas o middleware roda no servidor e consegue lê-lo. O cookie em
+// si é um UUID opaco (sem role), então a única forma de descobrir a role
+// antes de servir a página é perguntar pro backend via /refresh-token — que
+// já devolve um novo access token (JWT com id+role) e rotaciona o cookie.
+// (/me não serve aqui: exige Authorization: Bearer, e o access token só
+// existe em memória no React do cliente, nunca chega no middleware.)
+export async function middleware(request: NextRequest) {
+  const redirectHome = () => NextResponse.redirect(new URL("/", request.url));
+
+  const cookieHeader = request.headers.get("cookie");
+  if (!cookieHeader?.includes("refreshToken=")) {
+    return redirectHome();
+  }
+
+  const backendRes = await fetch(`${API_URL}/refresh-token`, {
+    method: "POST",
+    headers: { cookie: cookieHeader },
+  });
+
+  if (!backendRes.ok) {
+    return redirectHome();
+  }
+
+  const { token } = (await backendRes.json()) as { token: string };
+  const payload = JSON.parse(atob(token.split(".")[1])) as { role?: string };
+
+  if (payload.role !== "ADMIN") {
+    return redirectHome();
+  }
+
+  const response = NextResponse.next();
+
+  // repassa o Set-Cookie do refresh rotacionado, senão o browser fica com um
+  // refreshToken que o backend já invalidou e a próxima chamada falha
+  const setCookie = backendRes.headers.get("set-cookie");
+  if (setCookie) {
+    response.headers.set("set-cookie", setCookie);
+  }
+
+  return response;
 }
 
-// Roda o middleware só nas rotas que precisam de proteção
 export const config = {
   matcher: ["/admin/:path*"],
 };
