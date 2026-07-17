@@ -24,7 +24,12 @@ export default function UserProfile() {
         {userLogo}
       </button>
       {isOpen && (
-        <div className="absolute gap-2 flex flex-col top-16 text-black right-0 bg-white shadow-lg rounded-md p-4 w-48 z-50">
+        <>
+        <div
+      onClick={() => setIsOpen(false)}
+      className="fixed inset-0 hover:cursor-default  z-50 flex items-center justify-center"
+    ></div>
+        <div onClick={(e) => e.stopPropagation()} className="absolute z-60 gap-2 flex flex-col top-16 text-black right-0 bg-white shadow-lg rounded-md p-4 w-48 z-50">
           <Link onClick={() => setIsOpen(false)} href={"/addresses"}>
             Endereços
           </Link>
@@ -45,6 +50,7 @@ export default function UserProfile() {
             </>
           )}
         </div>
+        </>
       )}
     </div>
   );
