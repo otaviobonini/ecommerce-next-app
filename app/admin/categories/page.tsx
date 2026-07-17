@@ -4,6 +4,7 @@ import { useAdmin } from "@/app/context/AdminContext";
 import CreateCategoryForm from "@/components/admin/CreateCategoryForm";
 import AdminModal from "@/components/AdminModal";
 import Categoria from "@/components/Categoria";
+import { Category } from "@/schemas/product";
 import {
   faEdit,
   faPlus,
@@ -16,7 +17,7 @@ import { useState } from "react";
 
 export default function CategoriesPage() {
   const { categories, deleteCategory } = useAdmin();
-  const [initialData, setInitialData] = useState();
+  const [initialData, setInitialData] = useState<Category | undefined>(undefined);
   const [isOpen, setIsOpen] = useState(false);
   function handleDelete(categoryId: number) {
     deleteCategory(categoryId);

@@ -172,6 +172,6 @@ export default function AddressModal({ onSuccess, onClose, isOpen }: Props) {
         </form>
       </div>
     </div>,
-    portal,
+    portal!,
   );
 }

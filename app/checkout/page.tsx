@@ -71,7 +71,7 @@ export default function CheckoutPage() {
       setLoading(true);
       setError(null);
       try {
-        const res = await getCartItems(token);
+        const res = await getCartItems(token!);
         setCart(res);
       } catch (e) {
         setError(e instanceof Error ? e.message : "Erro ao carregar carrinho");
