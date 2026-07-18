@@ -4,8 +4,9 @@ import {
   CreateAddressInput,
   CreateAddressInputSchema,
 } from "@/schemas/address.schema";
-import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
+import { useState } from "react";
+import Modal from "./Modal";
+import ErrorAlert from "./ErrorAlert";
 
 interface Props {
   onSuccess: () => void;
@@ -17,7 +18,6 @@ export default function AddressModal({ onSuccess, onClose, isOpen }: Props) {
   const { token } = useAuth();
   const [street, setStreet] = useState("");
   const [city, setCity] = useState("");
-  const [portal, setPortal] = useState<HTMLElement | null>(null);
   const [state, setState] = useState("");
   const [zipCode, setZipCode] = useState("");
   const { createAddress } = useAddress();
@@ -52,21 +52,14 @@ export default function AddressModal({ onSuccess, onClose, isOpen }: Props) {
     }
   }
 
-  useEffect(() => {
-    setPortal(document.getElementById("address-modal"));
-  }, []);
-  if (!isOpen) return null;
-
-  return createPortal(
-    <div
-      onClick={onClose}
-      className="fixed inset-0 bg-black/50 z-80 flex items-center justify-center"
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      portalId="address-modal"
+      className="bg-white rounded-2xl w-full max-w-md mx-4"
     >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        className="bg-white rounded-2xl p-6 w-full max-w-md mx-4"
-      >
-        <h2>Novo endereço</h2>
+      <h2>Novo endereço</h2>
         <form onSubmit={handleSubmit} className="flex flex-col gap-5 mt-5">
           <div className="relative">
             <input
@@ -152,7 +145,9 @@ export default function AddressModal({ onSuccess, onClose, isOpen }: Props) {
             </label>
           </div>
 
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          {error && (
+            <ErrorAlert message={error} onClose={() => setError(null)} />
+          )}
 
           <button
             type="submit"
@@ -170,8 +165,6 @@ export default function AddressModal({ onSuccess, onClose, isOpen }: Props) {
             Cancelar
           </button>
         </form>
-      </div>
-    </div>,
-    portal!,
+    </Modal>
   );
 }
