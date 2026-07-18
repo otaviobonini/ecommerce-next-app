@@ -1,26 +1,16 @@
 @import "tailwindcss";
 
+/*
+ * Design tokens da Faciliteei.
+ * Use `brand` nas classes do Tailwind (bg-brand, text-brand, border-brand...)
+ * em vez de azuis avulsos, pra cor de destaque ser trocável num lugar só.
+ */
+@theme {
+  --color-brand: #2563eb; /* azul de ação (mesmo blue-600 já usado no admin) */
+  --color-brand-dark: #1d4ed8; /* hover/active */
+}
+
 body {
   font-family: var(--font-poppins), sans-serif;
   background-color: rgb(236, 236, 235);
-}
-
-:root {
-  --primary: #7a00ff;
-  --background: #0f0f10;
-  --text: #ffffff;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
