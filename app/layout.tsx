@@ -25,8 +25,12 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Ecommerce",
-  description: "Ecommerce next app",
+  title: {
+    default: "Faciliteei — Tecnologia e Periféricos",
+    template: "%s | Faciliteei",
+  },
+  description:
+    "Loja de tecnologia: periféricos, monitores, áudio, redes e armazenamento com entrega para todo o Brasil.",
 };
 
 export default async function RootLayout({
@@ -53,7 +57,7 @@ export default async function RootLayout({
                   <div id="admin-modal"></div>
                   <div className="bg-black flex flex-col">
                     <ul className="flex flex-wrap md:flex items-center gap-4 lg:ml-auto lg:mr-auto text-white ">
-                      <li className="ml-6 mb-8 flex items-center ">
+                      <li className="ml-2 md:ml-6 mb-8 flex items-center ">
                         <MobileMenu></MobileMenu>
                         <Link href="/">
                           <Image
@@ -86,7 +90,7 @@ export default async function RootLayout({
                           <Carrinho></Carrinho>
                         </div>
                       </li>
-                      <li className="-ml-2">
+                      <li className="-ml-2 hidden sm:block">
                         <div className="flex items-center lg:text-lg gap-4 mr-4 relative hover:cursor-pointer">
                           <LogoutButton></LogoutButton>
                         </div>
