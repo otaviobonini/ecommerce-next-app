@@ -8,6 +8,7 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTruck, faBars } from "@fortawesome/free-solid-svg-icons";
 import { getCategories } from "@/app/services/product.service";
+import type { Category } from "@/schemas/product";
 import { CartProvider } from "./context/CartContext";
 import Carrinho from "@/components/Carrinho";
 import { AuthProvider } from "./context/AuthContext";
@@ -28,12 +29,17 @@ export const metadata: Metadata = {
   description: "Ecommerce next app",
 };
 
-const categories = await getCategories();
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // fetch dentro do componente (não no escopo do módulo): se a API estiver
+  // fora durante o build, o menu builda vazio e o ISR preenche em runtime
+  let categories: Category[] = [];
+  try {
+    categories = await getCategories();
+  } catch {}
   return (
     <html lang="pt-BR" className="h-full antialiased">
       <body className={`${poppins.className} min-h-full flex flex-col`}>

@@ -1,8 +1,13 @@
 import Product from "@/components/ProductCard";
 import { getProducts, getPrimaryImage } from "@/app/services/product.service";
+import type { Product as ProductData } from "@/schemas/product";
 
 export default async function CatalogoPage() {
-  const { products } = await getProducts(100);
+  // fail-soft: API fora durante o build → página builda vazia e o ISR preenche
+  let products: ProductData[] = [];
+  try {
+    products = (await getProducts(100)).products;
+  } catch {}
 
   return (
     <div>

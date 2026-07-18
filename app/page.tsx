@@ -7,10 +7,16 @@ import {
   getPrimaryImage,
   getCategories,
 } from "@/app/services/product.service";
+import type { Product as ProductData, Category } from "@/schemas/product";
 
 export default async function HomePage() {
-  const { products } = await getProducts(10, 0);
-  const categories = await getCategories();
+  // fail-soft: API fora durante o build → página builda vazia e o ISR preenche
+  let products: ProductData[] = [];
+  let categories: Category[] = [];
+  try {
+    products = (await getProducts(10, 0)).products;
+    categories = await getCategories();
+  } catch {}
   return (
     <div className="">
       <Carroussel></Carroussel>
