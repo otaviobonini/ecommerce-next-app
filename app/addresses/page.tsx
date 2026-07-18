@@ -10,6 +10,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../context/AuthContext";
 import AddressModal from "@/components/AddressModal";
+import ErrorAlert from "@/components/ErrorAlert";
 import { useState } from "react";
 
 export default function AddressesPage() {
@@ -23,6 +24,7 @@ export default function AddressesPage() {
   });
   const [editingAddressId, setEditingAddressId] = useState<number | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const { token } = useAuth();
   const { addresses, deleteAddress, setDefaultAddress, editAddress } =
@@ -30,9 +32,24 @@ export default function AddressesPage() {
 
   async function handleDeleteAddress(addressId: number) {
     if (!token) return;
+    setError(null);
     try {
       await deleteAddress(addressId, token);
-    } catch (e) {}
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Erro ao remover endereço");
+    }
+  }
+
+  async function handleSetDefault(addressId: number) {
+    if (!token) return;
+    setError(null);
+    try {
+      await setDefaultAddress(addressId, token);
+    } catch (e) {
+      setError(
+        e instanceof Error ? e.message : "Erro ao definir endereço padrão",
+      );
+    }
   }
 
   function startEditing(address: {
@@ -73,11 +90,12 @@ export default function AddressesPage() {
     )
       return;
     setIsSaving(true);
+    setError(null);
     try {
       await editAddress(addressId, { ...editForm }, token);
       cancelEditing();
     } catch (e) {
-      // opcional: mostrar erro pro usuário
+      setError(e instanceof Error ? e.message : "Erro ao salvar endereço");
     } finally {
       setIsSaving(false);
     }
@@ -86,6 +104,7 @@ export default function AddressesPage() {
   return (
     <div className="gap-4 p-4 ml-auto mr-auto lg:w-5xl  flex flex-col">
       <h1 className="text-3xl">Seus endereços</h1>{" "}
+      {error && <ErrorAlert message={error} onClose={() => setError(null)} />}
       <div className="flex flex-col gap-4">
         {addresses.map((address) => {
           const isThisEditing =
@@ -118,10 +137,7 @@ export default function AddressesPage() {
                 ) : (
                   <button
                     className="bg-gray-500 rounded-2xl hover:cursor-pointer px-2 text-gray-200 hover:bg-gray-700 transition-colors"
-                    onClick={() => {
-                      if (!token) return;
-                      setDefaultAddress(address.addressId, token);
-                    }}
+                    onClick={() => handleSetDefault(address.addressId)}
                   >
                     Tornar padrão
                   </button>

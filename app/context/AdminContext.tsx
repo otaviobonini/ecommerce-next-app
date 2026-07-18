@@ -14,7 +14,7 @@ import {
   Product,
   ProductImage,
 } from "@/schemas/product";
-import { AdminOrder, Order, OrderStatus } from "@/schemas/order.schema";
+import { AdminOrder, OrderStatus } from "@/schemas/order.schema";
 import { useAuth } from "./AuthContext";
 import { useUser } from "./UserContext";
 import {
@@ -59,6 +59,8 @@ interface AdminContextType {
   createProduct: (data: NewProductInput) => Promise<Product>;
   updateProduct: (productId: number, data: EditProductData) => Promise<Product>;
   deleteProduct: (productId: number) => Promise<void>;
+  orderError: string | null;
+  clearOrderError: () => void;
   uploadProductImage: (productId: number, file: File) => Promise<ProductImage>;
   deleteProductImage: (productId: number, imageId: number) => Promise<void>;
   setPrimaryProductImage: (productId: number, imageId: number) => Promise<void>;
@@ -97,6 +99,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   const [loadingCategories, setLoadingCategories] = useState(false);
 
   const [orders, setOrders] = useState<AdminOrder[]>([]);
+  const [orderError, setOrderError] = useState<string | null>(null);
   const [loadingOrders, setLoadingOrders] = useState(false);
 
   // ---------- Produtos ----------
@@ -242,7 +245,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         const res = await getOrdersService(token, offset, limit);
         setOrders(res);
       } catch (err) {
-        console.error("Erro ao buscar pedidos:", err);
+        setOrderError(err instanceof Error ? err.message : "Erro ao carregar pedidos");
       } finally {
         setLoadingOrders(false);
       }
@@ -274,9 +277,12 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   // Carrega os dados de admin assim que soubermos que o usuário é ADMIN
   useEffect(() => {
     if (!token || !isAdmin) return;
-    fetchProducts();
-    fetchCategories();
-    fetchOrders();
+    function fetchAll(){
+      fetchProducts();
+      fetchCategories();
+      fetchOrders();
+    }
+    fetchAll();
   }, [token, isAdmin, fetchProducts, fetchCategories, fetchOrders]);
 
   return (
@@ -299,7 +305,8 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         createCategory,
         deleteCategory,
         uploadCategoryImage,
-
+        orderError,
+        clearOrderError: () => setOrderError(null),
         orders,
         loadingOrders,
         fetchOrders,

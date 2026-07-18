@@ -1,12 +1,15 @@
 "use client";
 
 import { useAdmin } from "@/app/context/AdminContext";
+import ErrorAlert from "@/components/ErrorAlert";
 import Image from "next/image";
 import { useState } from "react";
 
 export default function OrdersPage() {
-  const { orders, changeOrderStatus } = useAdmin();
+  const { orders, changeOrderStatus, orderError, clearOrderError } =
+    useAdmin();
   const [isEditing, setIsEditing] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [selectedStatus, setSelectedStatus] = useState<
     Record<number, keyof typeof statusMap>
   >({});
@@ -31,13 +34,25 @@ export default function OrdersPage() {
     orderId: number,
     newStatus: keyof typeof statusMap,
   ) {
-    await changeOrderStatus(orderId, newStatus);
-    setIsEditing(null);
+    setError(null);
+    try {
+      await changeOrderStatus(orderId, newStatus);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Erro ao atualizar status do pedido",
+      );
+    } finally {
+      setIsEditing(null);
+    }
   }
 
   return (
     <div className="flex flex-col items-center p-6">
       <h1 className="mb-8 text-3xl font-bold">Pedidos</h1>
+      {orderError && (
+        <ErrorAlert onClose={clearOrderError} message={orderError} />
+      )}
+      {error && <ErrorAlert onClose={() => setError(null)} message={error}></ErrorAlert>}
 
       {orders.length === 0 ? (
         <p className="text-gray-500">Nenhum pedido encontrado.</p>

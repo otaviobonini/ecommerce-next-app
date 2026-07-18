@@ -4,6 +4,7 @@ import { useAdmin } from "@/app/context/AdminContext";
 import CreateCategoryForm from "@/components/admin/CreateCategoryForm";
 import AdminModal from "@/components/AdminModal";
 import Categoria from "@/components/Categoria";
+import ErrorAlert from "@/components/ErrorAlert";
 import { Category } from "@/schemas/product";
 import {
   faEdit,
@@ -19,14 +20,21 @@ export default function CategoriesPage() {
   const { categories, deleteCategory } = useAdmin();
   const [initialData, setInitialData] = useState<Category | undefined>(undefined);
   const [isOpen, setIsOpen] = useState(false);
-  function handleDelete(categoryId: number) {
-    deleteCategory(categoryId);
+  const [error, setError] = useState<string | null>(null);
+ async function handleDelete(categoryId: number) {
+    try {
+      setError(null);
+      await deleteCategory(categoryId);
+    } catch (err) {
+      setError(err instanceof Error && err.message ? err.message : "Erro ao excluir categoria");
+    }
   }
 
   return (
     <div className="flex flex-col gap-4 items-center">
       <div className="w-full max-w-3xl my-8 flex  flex-col gap-4">
         <h1 className="text-2xl font-bold text-gray-800">Categorias</h1>
+          {error && <ErrorAlert onClose={() => setError(null)} message={error}></ErrorAlert>}
         <Link
           href="/admin"
           className="inline-flex items-center w-24 gap-2 hover:bg-gray-400 p-2 rounded-4xl transition-colors duration-500"
@@ -35,6 +43,7 @@ export default function CategoriesPage() {
           Voltar
         </Link>
       </div>
+   
       <div className="grid sm:grid-cols-1 lg:grid-cols-3 gap-24">
         {categories.map((category) => (
           <div className="relative" key={category.categoryId}>

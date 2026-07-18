@@ -1,9 +1,10 @@
 "use client";
 
 import { useAdmin } from "@/app/context/AdminContext";
+import ErrorAlert from "@/components/ErrorAlert";
 import { Category } from "@/schemas/product";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 
 type Image = {
   url: string;
@@ -17,39 +18,44 @@ export default function CreateCategoryForm({
   initialData?: Category;
   onSuccess?: () => void;
 }) {
-  const [name, setName] = useState("");
-  const [image, setImage] = useState<Image>();
+  
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { createCategory, uploadCategoryImage, editCategory } = useAdmin();
+  const [name, setName] = useState(initialData?.name ?? "");
+const [image, setImage] = useState<Image | undefined>(
+  initialData?.categoryImage
+    ? { file: null as unknown as File, url: initialData.categoryImage }
+    : undefined,
+);
 
-  useEffect(() => {
-    if (initialData) {
-      setName(initialData.name);
-    }
-    if (initialData?.categoryImage) {
-      setImage({
-        file: null as unknown as File,
-        url: initialData.categoryImage,
-      });
-    }
-  }, [initialData]);
+
+  
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!initialData) {
-      if (!image) {
-        return onSuccess?.();
+    setError(null); // limpa o erro da tentativa anterior
+    setIsSubmitting(true);
+
+    try {
+      if (!initialData) {
+        const category = await createCategory({ name: name });
+        if (image?.file) {
+          await uploadCategoryImage(category.categoryId, image.file);
+        }
+      } else {
+        const category = await editCategory(initialData.categoryId, {
+          name: name,
+        });
+        if (image?.file) {
+          await uploadCategoryImage(category.categoryId, image.file);
+        }
       }
-      const category = await createCategory({ name: name });
-      await uploadCategoryImage(category.categoryId, image.file);
-      return onSuccess?.();
-    } else {
-      const category = await editCategory(initialData.categoryId, {
-        name: name,
-      });
-      if (image?.file) {
-        await uploadCategoryImage(category.categoryId, image.file);
-      }
-      return onSuccess?.();
+      onSuccess?.();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erro ao salvar categoria");
+    } finally {
+      setIsSubmitting(false); // reabilita o botão com ou sem erro
     }
   }
 
@@ -123,11 +129,13 @@ export default function CreateCategoryForm({
             </button>
           </div>
         )}
+        {error && <ErrorAlert message={error} onClose={() => setError(null)} />}
         <button
           type="submit"
-          className="rounded-xl bg-black py-3 text-white transition hover:bg-gray-800"
+          disabled={isSubmitting}
+          className="rounded-xl bg-black py-3 text-white transition hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Enviar
+          {isSubmitting ? "Enviando..." : "Enviar"}
         </button>
       </form>
     </div>

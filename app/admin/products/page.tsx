@@ -4,6 +4,7 @@ import { useAdmin } from "@/app/context/AdminContext";
 import { getPrimaryImage } from "@/app/services/product.service";
 import CreateProductForm from "@/components/admin/CreateProductForm";
 import AdminModal from "@/components/AdminModal";
+import ErrorAlert from "@/components/ErrorAlert";
 import { Product } from "@/schemas/product";
 import {
   faTrash,
@@ -23,9 +24,10 @@ export default function ProductsPage() {
     categories,
     loadingProducts,
     deleteProduct,
-    updateProduct,
+    
   } = useAdmin();
   const [isOpen, setIsOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
   function handleEdit(productId: number) {
@@ -35,9 +37,20 @@ export default function ProductsPage() {
     setEditingProduct(product);
   }
 
+  async function handleDelete(productId: number) {
+  try {
+    setError(null);
+    await deleteProduct(productId);
+  } catch (err) {
+    setError(err instanceof Error ? err.message : "Erro ao deletar produto");
+  }
+}
+
   return (
     <div className="gap-6 p-4 flex flex-col max-w-5xl mx-auto">
       <h1 className="text-2xl font-bold text-gray-800">Produtos</h1>
+      
+{error && <ErrorAlert message={error} onClose={() => setError(null)} />}
       <div className="flex items-center">
         <Link
           className="flex items-center hover:bg-gray-400 p-2 rounded-4xl transition-colors duration-500 gap-2"
@@ -109,13 +122,14 @@ export default function ProductsPage() {
 
                 <div className="flex gap-2 mt-2">
                   <button
-                    onClick={() => deleteProduct(product.productId)}
+                    onClick={() => handleDelete(product.productId)}
                     aria-label="Remover item"
                     className="flex-1 flex items-center justify-center gap-1 h-9 rounded-md border border-red-200 bg-red-50 text-red-600 text-sm hover:bg-red-100 transition-colors cursor-pointer"
                   >
                     <FontAwesomeIcon icon={faTrash} />
                     Remover
                   </button>
+                  
                   <button
                     onClick={() => handleEdit(product.productId)}
                     className="flex-1 flex items-center justify-center gap-1 h-9 rounded-md border border-blue-200 bg-blue-50 text-blue-600 text-sm hover:bg-blue-100 transition-colors cursor-pointer"

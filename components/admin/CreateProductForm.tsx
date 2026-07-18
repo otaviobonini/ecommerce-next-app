@@ -1,8 +1,10 @@
 "use client";
 
 import { useAdmin } from "@/app/context/AdminContext";
+import ErrorAlert from "@/components/ErrorAlert";
 
 import { Product, ProductImage } from "@/schemas/product";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 type ImageSlot = {
@@ -28,7 +30,8 @@ export default function CreateProductForm({
   const [productImages, setProductImages] = useState<ProductImage[]>();
 
   const [imagesToRemove, setImagesToRemove] = useState<number[]>([]);
-
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [featured, setFeatured] = useState(false);
 
   function toggleRemoveExistingImage(imageId: number) {
@@ -46,6 +49,7 @@ export default function CreateProductForm({
 
   useEffect(() => {
     if (!editingProduct) {
+      async function resetForm() {
       setName("");
       setDescription("");
       setInitialStock("");
@@ -55,72 +59,80 @@ export default function CreateProductForm({
       setProductImages([]);
       setImages([]);
       setImagesToRemove([]);
-      return;
+      return;}
+      resetForm();
     }
     if (editingProduct) {
-      setName(editingProduct.productName ?? "");
-      setDescription(editingProduct.productDescription ?? "");
-      setInitialStock(String(editingProduct.stock ?? ""));
-      setPrice(String(editingProduct.productPrice ?? ""));
+      async function populateForm() {
+      const product = editingProduct;
+      if (!product) return;
+
+      setName(product.productName ?? "");
+      setDescription(product.productDescription ?? "");
+      setInitialStock(String(product.stock ?? ""));
+      setPrice(String(product.productPrice ?? ""));
       setCategory(
-        editingProduct.categoryId
-          ? String(editingProduct.categoryId)
+        product.categoryId
+          ? String(product.categoryId)
           : undefined,
       );
-      setFeatured(editingProduct.isFeatured ?? false);
-      setProductImages(editingProduct.images ?? []);
+      setFeatured(product.isFeatured ?? false);
+      setProductImages(product.images ?? []);
     }
+    populateForm();
+  }
   }, [editingProduct]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setError(null); // limpa o erro da tentativa anterior
+    setIsSubmitting(true);
 
-    if (!editingProduct) {
-      const product = await createProduct({
-        productName: name,
-        productPrice: Number(price),
-        stock: Number(initialStock),
-        isFeatured: featured,
-        productDescription: description,
-        categoryId: Number(category),
-      });
+    try {
+      if (!editingProduct) {
+        const product = await createProduct({
+          productName: name,
+          productPrice: Number(price),
+          stock: Number(initialStock),
+          isFeatured: featured,
+          productDescription: description,
+          categoryId: Number(category),
+        });
 
-      for (let i = 0; i < images.length; i++) {
-        const uploadedImage = await uploadProductImage(
-          product.productId,
-          images[i].file!,
-        );
-
-        if (i === 0) {
-          await setPrimaryProductImage(
+        for (let i = 0; i < images.length; i++) {
+          const uploadedImage = await uploadProductImage(
             product.productId,
-            uploadedImage.imageId,
+            images[i].file!,
           );
+
+          if (i === 0) {
+            await setPrimaryProductImage(
+              product.productId,
+              uploadedImage.imageId,
+            );
+          }
         }
-        onSuccess();
-      }
-    } else {
-      const product = await updateProduct(editingProduct.productId, {
-        productName: name,
-        productPrice: Number(price),
-        stock: Number(initialStock),
-        isFeatured: featured,
-        productDescription: description,
-        categoryId: Number(category),
-      });
-      for (let i = 0; i < imagesToRemove.length; i++) {
-        const deletedImage = await deleteProductImage(
-          editingProduct.productId,
-          imagesToRemove[i],
-        );
-      }
-      for (let i = 0; i < images.length; i++) {
-        const uploadedImage = await uploadProductImage(
-          product.productId,
-          images[i].file!,
-        );
+      } else {
+        const product = await updateProduct(editingProduct.productId, {
+          productName: name,
+          productPrice: Number(price),
+          stock: Number(initialStock),
+          isFeatured: featured,
+          productDescription: description,
+          categoryId: Number(category),
+        });
+        for (let i = 0; i < imagesToRemove.length; i++) {
+          await deleteProductImage(editingProduct.productId, imagesToRemove[i]);
+        }
+        for (let i = 0; i < images.length; i++) {
+          await uploadProductImage(product.productId, images[i].file!);
+        }
       }
       onSuccess();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erro ao salvar produto");
+    } finally {
+      setIsSubmitting(false); // reabilita o botão com ou sem erro
     }
   }
   return (
@@ -226,10 +238,13 @@ export default function CreateProductForm({
         <select
           onChange={(e) => setCategory(e.target.value)}
           id="categories"
-          value={category}
+          value={category ?? ""}
+          required
           className="block w-full px-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body"
         >
-          <option selected>Escolha a categoria do produto</option>
+          <option value="" disabled>
+            Escolha a categoria do produto
+          </option>
           {categories.map((category) => (
             <option key={category.categoryId} value={category.categoryId}>
               {category.name}
@@ -265,7 +280,7 @@ export default function CreateProductForm({
                   marcadaParaRemover ? "hidden" : "border-gray-300"
                 }`}
               >
-                <img
+                <Image
                   src={image.url}
                   alt="Imagem do produto"
                   className="object-cover w-full h-full"
@@ -290,7 +305,7 @@ export default function CreateProductForm({
               key={index}
               className="relative h-28 w-28 overflow-hidden rounded-lg border border-gray-300 bg-gray-100 shadow-sm"
             >
-              <img
+              <Image
                 src={image.preview!}
                 alt={`Preview ${index + 1}`}
                 className="object-cover"
@@ -308,7 +323,14 @@ export default function CreateProductForm({
             </div>
           ))}
         </div>
-        <button type="submit">Enviar</button>
+        {error && <ErrorAlert message={error} onClose={() => setError(null)} />}
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isSubmitting ? "Enviando..." : "Enviar"}
+        </button>
       </form>
     </div>
   );
