@@ -53,7 +53,7 @@ export default function CategoriesPage() {
                   setInitialData(category);
                   setIsOpen(true);
                 }}
-                className="hover:cursor-pointer bg-blue-200 p-1 rounded-sm text-blue-500"
+                className="hover:cursor-pointer bg-brand/20 p-1 rounded-sm text-brand"
               >
                 <FontAwesomeIcon icon={faEdit}></FontAwesomeIcon>
               </button>

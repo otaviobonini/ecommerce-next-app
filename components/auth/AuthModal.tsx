@@ -4,6 +4,7 @@ import { useState } from "react";
 import RegisterForm from "./RegisterForm";
 import LoginForm from "./LoginForm";
 import Modal from "../Modal";
+import Button from "../Button";
 
 interface Props {
   onSuccess: () => void;
@@ -21,7 +22,9 @@ export default function AuthModal({ onSuccess, onClose, isOpen }: Props) {
       portalId="auth-modal"
       className="bg-gray-100 rounded-lg min-h-8/12 min-w-4/12"
     >
-      <button onClick={onClose}>Voltar</button>
+      <Button variant="ghost" onClick={onClose}>
+        ← Voltar
+      </Button>
       {mode === "register" ? (
         <RegisterForm
           onSuccess={onSuccess}

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Button from "@/components/Button";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { deleteCartItem } from "../services/cart.service";
@@ -202,12 +203,14 @@ export default function CheckoutPage() {
             </div>
           )}
         </div>
-        <button
+        <Button
+          variant="secondary"
+          size="lg"
+          className="w-full"
           onClick={() => setIsAddressModalOpen(true)}
-          className="w-full bg-green-600 hover:bg-green-800 text-white py-3 rounded-full transition-colors duration-300 cursor-pointer"
         >
           Adicionar endereço
-        </button>
+        </Button>
         <AddressModal
           isOpen={isAddressModalOpen}
           onClose={() => setIsAddressModalOpen(false)}
@@ -228,12 +231,9 @@ export default function CheckoutPage() {
             })}
           </span>
         </div>
-        <button
-          onClick={handleCheckout}
-          className="w-full bg-purple-600 hover:bg-purple-800 text-white py-3 rounded-full transition-colors duration-300 cursor-pointer"
-        >
+        <Button variant="brand" size="lg" className="w-full" onClick={handleCheckout}>
           Continuar para pagamento
-        </button>
+        </Button>
       </div>
     </div>
   );

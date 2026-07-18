@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { formatPrice } from "@/app/utils/formatPrice";
 import Link from "next/link";
 
 interface productsType {
@@ -23,7 +24,7 @@ export default function Product({ img, name, price, productId }: productsType) {
         className="h-48 w-48 rounded-lg lg:h-64 lg:w-64"
       ></Image>
       <h1 className=" text-gray-400 py-4">{name}</h1>
-      <p className="text-xl font-bold ">R$ {price.toFixed(2)}</p>
+      <p className="text-xl font-bold ">{formatPrice(price)}</p>
     </Link>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
+import Button from "@/components/Button";
 
 type FormData = {
   fullName: string;
@@ -87,12 +88,9 @@ export default function ContatoPage() {
           placeholder="Como podemos te ajudar?"
         />
         <p className="text-sm text-red-500">{errors.message?.message}</p>
-        <button
-          type="submit"
-          className="mt-2 w-full bg-black text-white rounded-xl p-3 text-sm font-medium hover:bg-gray-900 transition-colors cursor-pointer"
-        >
+        <Button type="submit" className="mt-2 w-full">
           Enviar mensagem
-        </button>
+        </Button>
       </form>
     </div>
   );

@@ -1,6 +1,8 @@
 "use client";
 
 import { useAdmin } from "@/app/context/AdminContext";
+import Button from "@/components/Button";
+import { formatPrice } from "@/app/utils/formatPrice";
 import ErrorAlert from "@/components/ErrorAlert";
 import Image from "next/image";
 import { useState } from "react";
@@ -95,28 +97,33 @@ export default function OrdersPage() {
                   )}
                   {isEditing === order.orderId && (
                     <div className="mt-3 flex gap-2">
-                      <button
+                      <Button
+                        variant="brand"
+                        size="sm"
                         onClick={() => {
                           handleStatusChange(
                             order.orderId,
                             selectedStatus[order.orderId],
                           );
                         }}
-                        className="rounded bg-green-600 px-3 py-2 text-white hover:bg-green-700"
                       >
                         Salvar
-                      </button>
+                      </Button>
 
-                      <button
+                      <Button
+                        variant="secondary"
+                        size="sm"
                         onClick={() => setIsEditing(null)}
-                        className="rounded bg-gray-300 px-3 py-2 hover:bg-gray-400"
                       >
                         Cancelar
-                      </button>
+                      </Button>
                     </div>
                   )}
                   {isEditing !== order.orderId && (
-                    <button
+                    <Button
+                      variant="brand"
+                      size="sm"
+                      className="mt-2 ml-4"
                       onClick={() => {
                         setIsEditing(order.orderId);
                         setSelectedStatus((prev) => ({
@@ -124,10 +131,9 @@ export default function OrdersPage() {
                           [order.orderId]: order.status,
                         }));
                       }}
-                      className="mt-2 ml-4 hover:cursor-pointer rounded-2xl  bg-blue-500 p-2  text-white hover:bg-blue-600"
                     >
                       Atualizar
-                    </button>
+                    </Button>
                   )}
                   <p className="mt-2 text-sm text-gray-500">
                     <strong>Cliente:</strong> {order.user.username} (
@@ -142,7 +148,7 @@ export default function OrdersPage() {
 
                 <div className="text-right">
                   <p className="text-lg font-bold">
-                    R$ {Number(order.total).toFixed(2)}
+                    {formatPrice(order.total)}
                   </p>
 
                   <p className="text-sm text-gray-500">
@@ -181,7 +187,7 @@ export default function OrdersPage() {
                     </div>
 
                     <p className="font-medium">
-                      R$ {Number(item.priceAtTime).toFixed(2)}
+                      {formatPrice(item.priceAtTime)}
                     </p>
                   </div>
                 ))}

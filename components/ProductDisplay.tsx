@@ -1,5 +1,7 @@
 "use client";
 import { useCart } from "@/app/context/CartContext";
+import Button from "@/components/Button";
+import { formatPrice } from "@/app/utils/formatPrice";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -80,17 +82,14 @@ export default function ProductDisplay({
           {isFeatured ? "Destaque" : "Novo"}
         </p>
         <h1 className="text-2xl py-1 font-semibold">{productName}</h1>
-        <p className={stock > 0 ? "text-blue-500" : "text-red-500"}>
+        <p className={stock > 0 ? "text-brand" : "text-red-500"}>
           {stock > 0 ? "Disponivel em estoque" : "Fora de estoque"}
         </p>
 
         <p className="text-gray-400 py-4">
           Preço:{" "}
           <span className="text-2xl ml-2 font-semibold text-black">
-            R${" "}
-            {Number(productPrice).toLocaleString("pt-BR", {
-              minimumFractionDigits: 2,
-            })}
+            {formatPrice(productPrice)}
           </span>
         </p>
         <div className="flex  gap-4 py-6">
@@ -109,12 +108,9 @@ export default function ProductDisplay({
             +
           </button>
         </div>
-        <button
-          onClick={handleAddToCart}
-          className="bg-black w-full hover:bg-gray-900 text-white rounded-xl my-8 p-4"
-        >
+        <Button size="lg" className="w-full my-8" onClick={handleAddToCart}>
           Adicionar ao carrinho
-        </button>
+        </Button>
         <p className="font-semibold py-2">Descrição do produto</p>
         <p>{productDescription}</p>
       </div>

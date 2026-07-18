@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { formatPrice } from "@/app/utils/formatPrice";
 import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -19,10 +20,6 @@ const STATUS_LABELS: Record<Order["status"], string> = {
   DELIVERED: "Entregue",
   CANCELLED: "Cancelado",
 };
-
-function formatBRL(value: number) {
-  return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-}
 
 export default function OrderStatusPage() {
   const { orderId } = useParams<{ orderId: string }>();
@@ -113,11 +110,11 @@ export default function OrderStatusPage() {
           </p>
         </div>
       ) : (
-        <div className="rounded-2xl bg-blue-50  p-6 text-center">
-          <h1 className="text-2xl font-semibold text-blue-700 mb-2">
+        <div className="rounded-2xl bg-brand/10  p-6 text-center">
+          <h1 className="text-2xl font-semibold text-brand-dark mb-2">
             Confirmando seu pagamento...
           </h1>
-          <p className="text-blue-700">
+          <p className="text-brand-dark">
             Assim que o Stripe confirmar, o status do pedido #{order.orderId}{" "}
             atualiza automaticamente. Pode levar alguns segundos.
           </p>
@@ -158,7 +155,7 @@ export default function OrderStatusPage() {
                 </p>
               </div>
               <p className="font-medium text-green-600">
-                {formatBRL(item.quantity * Number(item.priceAtTime))}
+                {formatPrice(item.quantity * Number(item.priceAtTime))}
               </p>
             </div>
           ))}
@@ -167,7 +164,7 @@ export default function OrderStatusPage() {
         <div className="flex justify-between items-baseline border-t border-gray-200 pt-3">
           <span className="text-sm text-gray-500">Total</span>
           <span className="text-2xl font-semibold text-green-600">
-            {formatBRL(Number(order.total))}
+            {formatPrice(Number(order.total))}
           </span>
         </div>
       </div>

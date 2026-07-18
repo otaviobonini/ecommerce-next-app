@@ -37,7 +37,7 @@ export default async function HomePage() {
           </h1>{" "}
           <Link
             href="/bestseller"
-            className="text-blue-500 font-semibold hover:text-blue-700 transition-colors"
+            className="text-brand font-semibold hover:text-brand-dark transition-colors"
           >
             Ver todos
           </Link>

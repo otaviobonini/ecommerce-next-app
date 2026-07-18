@@ -111,7 +111,7 @@ export default function AddressesPage() {
             editing && editingAddressId === address.addressId;
           return (
             <div
-              className={`${address.isDefault ? "border-blue-700" : "border-gray-300"} relative rounded-xl max-w-72 md:max-w-5xl p-4 border`}
+              className={`${address.isDefault ? "border-brand" : "border-gray-300"} relative rounded-xl max-w-72 md:max-w-5xl p-4 border`}
               key={address.addressId}
             >
               <div className="flex gap-2 items-center">
@@ -131,7 +131,7 @@ export default function AddressesPage() {
                   )}
                 </h1>{" "}
                 {address.isDefault ? (
-                  <span className="bg-blue-600 text-blue-200 rounded-2xl px-2">
+                  <span className="bg-brand text-white rounded-2xl px-2">
                     Padrão
                   </span>
                 ) : (
@@ -203,7 +203,7 @@ export default function AddressesPage() {
 
                     <button
                       onClick={() => startEditing(address)}
-                      className="flex items-center  top-2 right-4 sm:ml-0  gap-1.5 px-1 py-1 rounded-md border border-blue-200 bg-blue-50 text-blue-600 text-sm hover:bg-blue-100 transition-colors cursor-pointer self-start"
+                      className="flex items-center  top-2 right-4 sm:ml-0  gap-1.5 px-1 py-1 rounded-md border border-brand/30 bg-brand/10 text-brand text-sm hover:bg-brand/20 transition-colors cursor-pointer self-start"
                     >
                       <FontAwesomeIcon icon={faEdit} className="text-md" />
                     </button>

@@ -1,6 +1,8 @@
 "use client";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { formatPrice } from "@/app/utils/formatPrice";
+import Button from "@/components/Button";
 import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
 import { useCart } from "@/app/context/CartContext";
 import CartProduct from "./CartProduct";
@@ -55,13 +57,14 @@ export default function Carrinho() {
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <button
+        <Button
+          size="sm"
+          className="mb-2"
           onClick={closeCart}
           aria-label="Fechar carrinho"
-          className="text-white hover:cursor-pointer bg-black rounded-xl p-2 mb-2  hover:text-black transition-colors "
         >
           Fechar
-        </button>
+        </Button>
         {items.length === 0 && (
           <div>
             <h1>Adicione algum item ao carrinho para continuar</h1>
@@ -80,16 +83,11 @@ export default function Carrinho() {
         ))}
         <p className="font-semibold text-2xl mt-8 text-center">
           Total:{" "}
-          {Number(totalPrice).toLocaleString("pt-BR", {
-            minimumFractionDigits: 2,
-          })}
+          {formatPrice(totalPrice)}
         </p>
-        <button
-          onClick={handleCheckout}
-          className="hover:cursor-pointer bg-black w-full hover:bg-gray-900 text-white rounded-xl my-8 p-4"
-        >
+        <Button size="lg" className="w-full my-8" onClick={handleCheckout}>
           Finalizar compra
-        </button>
+        </Button>
       </div>
       <AuthModal
         onSuccess={async () => {

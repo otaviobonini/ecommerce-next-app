@@ -1,6 +1,8 @@
 "use client";
 
 import { useAdmin } from "@/app/context/AdminContext";
+import Button from "@/components/Button";
+import { formatPrice } from "@/app/utils/formatPrice";
 import { getPrimaryImage } from "@/app/services/product.service";
 import CreateProductForm from "@/components/admin/CreateProductForm";
 import AdminModal from "@/components/AdminModal";
@@ -58,12 +60,16 @@ export default function ProductsPage() {
         >
           <FontAwesomeIcon icon={faTentArrowTurnLeft}></FontAwesomeIcon>Voltar
         </Link>
-        <button
-          onClick={() => setIsOpen(true)}
-          className="flex gap-2 items-center ml-auto rounded-4xl bg-blue-600 p-2 text-white hover:cursor-pointer hover:bg-blue-700 transition-colors duration-500 "
+        <Button
+          variant="brand"
+          className="flex gap-2 items-center ml-auto"
+          onClick={() => {
+            setEditingProduct(null); // garante modo "criar", nao edicao do anterior
+            setIsOpen(true);
+          }}
         >
           Adicionar Produto <FontAwesomeIcon icon={faAdd} />
-        </button>
+        </Button>
       </div>
       {loadingProducts ? (
         <p className="text-gray-500">Carregando...</p>
@@ -104,10 +110,7 @@ export default function ProductsPage() {
 
                 <div className="flex items-center justify-between text-sm text-gray-700 border-gray-200 border-t pt-2">
                   <span className="font-semibold text-xl text-gray-900">
-                    R${" "}
-                    {Number(product.productPrice).toLocaleString("pt-BR", {
-                      minimumFractionDigits: 2,
-                    })}
+                    {formatPrice(product.productPrice)}
                   </span>
                   <span className="font-medium text-gray-400">
                     Estoque: {product.stock}
@@ -132,7 +135,7 @@ export default function ProductsPage() {
                   
                   <button
                     onClick={() => handleEdit(product.productId)}
-                    className="flex-1 flex items-center justify-center gap-1 h-9 rounded-md border border-blue-200 bg-blue-50 text-blue-600 text-sm hover:bg-blue-100 transition-colors cursor-pointer"
+                    className="flex-1 flex items-center justify-center gap-1 h-9 rounded-md border border-brand/30 bg-brand/10 text-brand text-sm hover:bg-brand/20 transition-colors cursor-pointer"
                   >
                     <FontAwesomeIcon icon={faEdit} />
                     Editar

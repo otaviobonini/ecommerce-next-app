@@ -1,4 +1,5 @@
 import { useAddress } from "@/app/context/AddressContext";
+import Button from "@/components/Button";
 import { useAuth } from "@/app/context/AuthContext";
 import {
   CreateAddressInput,
@@ -149,21 +150,13 @@ export default function AddressModal({ onSuccess, onClose, isOpen }: Props) {
             <ErrorAlert message={error} onClose={() => setError(null)} />
           )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="mt-2 rounded-xl bg-black p-3 font-medium text-white transition hover:cursor-pointer hover:bg-gray-900 disabled:opacity-50"
-          >
+          <Button type="submit" size="lg" className="mt-2" disabled={loading}>
             {loading ? "Criando..." : "Criar Endereço"}
-          </button>
+          </Button>
 
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-xl border border-gray-300 p-3 transition hover:bg-gray-100 hover:cursor-pointer"
-          >
+          <Button type="button" variant="secondary" size="lg" onClick={onClose}>
             Cancelar
-          </button>
+          </Button>
         </form>
     </Modal>
   );

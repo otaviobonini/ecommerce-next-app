@@ -1,6 +1,7 @@
 "use client";
 
 import { useCart } from "@/app/context/CartContext";
+import { formatPrice } from "@/app/utils/formatPrice";
 import Image from "next/image";
 
 interface productsType {
@@ -33,7 +34,7 @@ export default function CartProduct({
         className="h-32 w-32 rounded-lg lg:h-48 lg:w-48"
       ></Image>
       <h1 className=" text-gray-400 py-4">{name}</h1>
-      <p className="text-xl font-bold ">R$ {price.toFixed(2)}</p>
+      <p className="text-xl font-bold ">{formatPrice(price)}</p>
       <div className="flex  gap-4 py-6">
         <button
           className="cursor-pointer"

@@ -2,6 +2,7 @@
 
 import { useAdmin } from "@/app/context/AdminContext";
 import ErrorAlert from "@/components/ErrorAlert";
+import Button from "@/components/Button";
 
 import { Product, ProductImage } from "@/schemas/product";
 import Image from "next/image";
@@ -324,13 +325,9 @@ export default function CreateProductForm({
           ))}
         </div>
         {error && <ErrorAlert message={error} onClose={() => setError(null)} />}
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+        <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? "Enviando..." : "Enviar"}
-        </button>
+        </Button>
       </form>
     </div>
   );

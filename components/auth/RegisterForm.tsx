@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Button from "@/components/Button";
 import { useAuth } from "@/app/context/AuthContext";
 import { RegisterInputSchema } from "@/schemas/auth.schema";
 
@@ -92,13 +93,9 @@ export default function RegisterForm({ onSuccess, onSwitchToLogin }: Props) {
 
       {error && <p className="text-red-600 text-sm">{error}</p>}
 
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="bg-black text-white rounded-xl p-3 hover:bg-gray-900 disabled:opacity-50 hover:cursor-pointer"
-      >
+      <Button type="submit" size="lg" disabled={isSubmitting}>
         {isSubmitting ? "Criando conta..." : "Criar conta"}
-      </button>
+      </Button>
 
       <button
         type="button"

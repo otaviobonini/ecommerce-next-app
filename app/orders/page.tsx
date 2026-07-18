@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { formatPrice } from "@/app/utils/formatPrice";
 import { useUser } from "../context/UserContext";
 
 export default function OrdersPage() {
@@ -48,7 +49,7 @@ export default function OrdersPage() {
                   </p>
                 </div>
 
-                <p className="font-bold">R$ {Number(order.total).toFixed(2)}</p>
+                <p className="font-bold">{formatPrice(order.total)}</p>
               </div>
 
               <div className="flex flex-col gap-3">
@@ -72,7 +73,7 @@ export default function OrdersPage() {
                       </p>
                     </div>
 
-                    <p>R$ {Number(item.priceAtTime).toFixed(2)}</p>
+                    <p>{formatPrice(item.priceAtTime)}</p>
                   </div>
                 ))}
               </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useAdmin } from "@/app/context/AdminContext";
+import Button from "@/components/Button";
 import ErrorAlert from "@/components/ErrorAlert";
 import { Category } from "@/schemas/product";
 import Image from "next/image";
@@ -130,13 +131,9 @@ const [image, setImage] = useState<Image | undefined>(
           </div>
         )}
         {error && <ErrorAlert message={error} onClose={() => setError(null)} />}
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="rounded-xl bg-black py-3 text-white transition hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+        <Button type="submit" size="lg" disabled={isSubmitting}>
           {isSubmitting ? "Enviando..." : "Enviar"}
-        </button>
+        </Button>
       </form>
     </div>
   );

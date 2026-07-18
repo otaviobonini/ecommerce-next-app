@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Button from "@/components/Button";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -104,13 +105,14 @@ export default function ProfilePage() {
         </div>
         <FontAwesomeIcon icon={faChevronRight} className="text-gray-400" />
       </Link>
-      <button
+      <Button
+        variant="danger"
+        className="flex items-center justify-center gap-2 mt-2"
         onClick={logout}
-        className="flex items-center justify-center gap-2 mt-2 p-3 border border-red-200 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-colors cursor-pointer"
       >
         <FontAwesomeIcon icon={faRightFromBracket} />
         Sair da conta
-      </button>
+      </Button>
     </div>
   );
 }
