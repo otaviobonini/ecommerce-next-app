@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Product } from "@/schemas/product";
 import Image from "next/image";
 import Link from "next/link";
+import { AnimatePresence, motion } from "motion/react";
 
 export default function InputComponent() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -58,8 +59,14 @@ export default function InputComponent() {
           <FontAwesomeIcon className="h-5 w-5" icon={faMagnifyingGlass} />
         </label>
       </div>
+      <AnimatePresence>
       {filteredProductsList.length !== 0 && (
-        <div className="flex flex-col gap-2 z-40 w-11/12 md:w-3xl lg:w-250 absolute mt-2 bg-white rounded-xl shadow-2xl border border-gray-100 p-2 ">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          className="flex flex-col gap-2 z-40 w-11/12 md:w-3xl lg:w-250 absolute mt-2 bg-white rounded-xl shadow-2xl border border-gray-100 p-2 "
+        >
           {filteredProductsList.map((product) => (
             <Link
               onClick={() => {
@@ -83,8 +90,9 @@ export default function InputComponent() {
               </h1>
             </Link>
           ))}
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
     </>
   );
 }
