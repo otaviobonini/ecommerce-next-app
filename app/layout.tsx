@@ -90,7 +90,7 @@ export default async function RootLayout({
                           <Carrinho></Carrinho>
                         </div>
                       </li>
-                      <li className="-ml-2 hidden sm:block">
+                      <li className="-ml-2  sm:block">
                         <div className="flex items-center lg:text-lg gap-4 mr-4 relative hover:cursor-pointer">
                           <LogoutButton></LogoutButton>
                         </div>

@@ -38,7 +38,7 @@ export default function LogoutButton() {
 
   return (
     <button
-      className="flex items-center hover:cursor-pointer gap-1"
+      className="hidden md:flex items-center hover:cursor-pointer gap-1"
       onClick={logout}
     >
       <FontAwesomeIcon icon={faRightFromBracket} />
