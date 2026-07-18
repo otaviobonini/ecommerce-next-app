@@ -32,7 +32,7 @@ export default function InputComponent() {
 
   useEffect(() => {
     async function loadProducts() {
-      const data = await getProducts();
+      const data = await getProducts(100);
       setProducts(data.products);
     }
 

@@ -59,8 +59,11 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     if (addresses.length > 0 && selectedAddressId === null) {
-      const defaultAddr = addresses.find((a) => a.isDefault) ?? addresses[0];
-      setSelectedAddressId(defaultAddr.addressId);
+     function defaultAddress() {
+       const defaultAddr = addresses.find((a) => a.isDefault) ?? addresses[0];
+       setSelectedAddressId(defaultAddr.addressId);
+     }
+     defaultAddress();
     }
   }, [addresses, selectedAddressId]);
 
@@ -80,7 +83,7 @@ export default function CheckoutPage() {
       }
     }
     cartItem();
-  }, [token]);
+  }, [token, getCartItems]);
 
   if (loading) {
     return <p className="p-8 text-gray-500">Carregando seu carrinho...</p>;
@@ -105,7 +108,7 @@ export default function CheckoutPage() {
             key={item.cartItemId}
             className="flex flex-col sm:flex-row gap-4 p-4 rounded-2xl bg-gray-100 border border-gray-200"
           >
-            <div className="w-[88px] h-[88px] rounded-md bg-gray-200 flex items-center justify-center overflow-hidden flex-shrink-0">
+            <div className="w-22 h-22 rounded-md bg-gray-200 flex items-center justify-center overflow-hidden shrink-0">
               <Image
                 alt={item.product.productName}
                 src={item.product.images[0]?.url ?? "/placeholder.png"}
@@ -153,7 +156,7 @@ export default function CheckoutPage() {
       </div>
 
       {/* Endereços */}
-      <div className="lg:w-[600px] flex flex-col gap-4 p-5 rounded-2xl bg-gray-100 border border-gray-200 h-fit lg:sticky lg:top-8">
+      <div className="lg:w-150 flex flex-col gap-4 p-5 rounded-2xl bg-gray-100 border border-gray-200 h-fit lg:sticky lg:top-8">
         <h2 className="text-xl font-semibold">
           Escolha seu endereço para entrega
         </h2>
@@ -214,7 +217,7 @@ export default function CheckoutPage() {
         />
       </div>
       {/* Resumo */}
-      <div className="lg:w-[500px] flex flex-col gap-4 p-5 rounded-2xl bg-gray-100 border border-gray-200 h-fit lg:sticky lg:top-8">
+      <div className="lg:w-150 flex flex-col gap-4 p-5 rounded-2xl bg-gray-100 border border-gray-200 h-fit lg:sticky lg:top-8">
         <h2 className="text-xl font-semibold">Resumo</h2>
         <div className="flex justify-between items-baseline border-t border-gray-200 pt-3">
           <span className="text-sm text-gray-500">Total</span>

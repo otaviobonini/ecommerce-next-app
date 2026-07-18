@@ -39,7 +39,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const me = await getMe(newToken);
         setToken(newToken);
         setUser({ id: me.userId, email: me.email, username: me.username });
-        localStorage.setItem("role", me.role); // usado pelo AdminLayout
       } catch {
         // sem cookie válido — segue deslogado, é o esperado
       } finally {
@@ -71,13 +70,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => clearTimeout(timer);
   }, [token]);
 
-async function login(data: LoginInput) {
-  const response = await loginRequest(data);
-  const me = await getMe(response.token);
-  setToken(response.token);
-  setUser({ id: response.id, email: response.email, username: response.username });
-  localStorage.setItem("role", me.role);
-}
+  async function login(data: LoginInput) {
+    const response = await loginRequest(data);
+    setToken(response.token);
+    setUser({
+      id: response.id,
+      email: response.email,
+      username: response.username,
+    });
+  }
 
   async function register(data: RegisterInput) {
     await registerRequest(data);
@@ -87,7 +88,6 @@ async function login(data: LoginInput) {
   async function logout() {
     await logoutRequest(); // backend limpa o cookie via Set-Cookie com maxAge 0
     setToken(null);
-    localStorage.removeItem("role");
     setUser(null);
   }
 

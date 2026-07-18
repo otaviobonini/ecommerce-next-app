@@ -130,7 +130,7 @@ export async function deleteProduct(
     },
   });
   if (!res.ok) {
-    throw new Error(`Erro ao excluir produto ${productId}: ${res.status}`);
+    throw new Error(`Erro ao excluir produto`);
   }
 }
 

@@ -37,13 +37,7 @@ export default function OrderStatusPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (authLoading) return;
-
-    if (!token) {
-      setError("Você precisa estar logado para ver este pedido.");
-      setLoading(false);
-      return;
-    }
+    if (authLoading || !token) return;
 
     async function load(currentToken: string) {
       setLoading(true);
@@ -75,6 +69,9 @@ export default function OrderStatusPage() {
     load(token);
   }, [orderId, token, authLoading]);
 
+  if (!authLoading && !token) {
+  return <p>Você precisa estar logado para ver este pedido.</p>;
+}
   if (loading) {
     return <p className="p-8 text-gray-500">Carregando seu pedido...</p>;
   }

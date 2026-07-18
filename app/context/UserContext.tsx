@@ -2,6 +2,7 @@
 
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useState,
@@ -78,7 +79,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
 
-  async function refreshUser() {
+  const refreshUser = useCallback(async () => {
     if (!token) {
       setUser(null);
       return;
@@ -98,11 +99,13 @@ export function UserProvider({ children }: { children: ReactNode }) {
     } finally {
       setLoading(false);
     }
-  }
+  }, [token]);
 
   useEffect(() => {
+    // fetch-on-token-change: setLoading síncrono é intencional (spinner imediato)
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     refreshUser();
-  }, [token]);
+  }, [refreshUser]);
 
   return (
     <UserContext.Provider

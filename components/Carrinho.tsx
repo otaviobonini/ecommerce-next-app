@@ -7,7 +7,7 @@ import CartProduct from "./CartProduct";
 import { useAuth } from "@/app/context/AuthContext";
 import { useState } from "react";
 import AuthModal from "./auth/AuthModal";
-import { redirect, useRouter } from "next/navigation";
+import {  useRouter } from "next/navigation";
 
 export default function Carrinho() {
   const [showAuthModal, setShowAuthModal] = useState(false);

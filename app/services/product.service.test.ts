@@ -310,7 +310,7 @@ describe("product.service", () => {
       );
 
       await expect(deleteProduct("fake-token", 1)).rejects.toThrow(
-        "Erro ao excluir produto 1: 404",
+        "Erro ao excluir produto",
       );
     });
   });

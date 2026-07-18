@@ -83,6 +83,7 @@ export async function editCategories({
   if (!res.ok) {
     throw new Error(`Erro ao editar categoria ${categoryId}: ${res.status}`);
   }
+  
 
   return res.json();
 }
