@@ -20,6 +20,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "otavio-ecommerce-bucket.s3.sa-east-1.amazonaws.com",
       },
+      {
+        protocol: "https",
+        hostname: "d3u6u0gldjzdcw.cloudfront.net",
+      },
       { protocol: "http", hostname: "localhost", port: "5000" },
     ],
   },
