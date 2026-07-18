@@ -1,8 +1,13 @@
 import Product from "@/components/ProductCard";
 import { getProducts, getPrimaryImage } from "@/app/services/product.service";
+import type { Product as ProductData } from "@/schemas/product";
 
 export default async function MaisVendidosPage() {
-  const { products } = await getProducts(100);
+  // fail-soft: API fora durante o build → página builda vazia e o ISR preenche
+  let products: ProductData[] = [];
+  try {
+    products = (await getProducts(100)).products;
+  } catch {}
 
   const featuredProducts = products.filter((product) => product.isFeatured);
 
