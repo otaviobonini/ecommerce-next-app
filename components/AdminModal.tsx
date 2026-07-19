@@ -16,7 +16,7 @@ export default function AdminModal({
       isOpen={isOpen}
       onClose={onClose}
       portalId="admin-modal"
-      className="bg-white rounded-lg shadow-xl min-w-[320px]"
+      className="bg-white rounded-lg shadow-xl sm:max-w-lg"
     >
       <div className="flex flex-col gap-4">
         {children}

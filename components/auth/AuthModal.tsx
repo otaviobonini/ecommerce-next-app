@@ -20,7 +20,7 @@ export default function AuthModal({ onSuccess, onClose, isOpen }: Props) {
       isOpen={isOpen}
       onClose={onClose}
       portalId="auth-modal"
-      className="bg-gray-100 rounded-lg min-h-8/12 min-w-4/12"
+      className="bg-gray-100 rounded-lg sm:max-w-md"
     >
       <Button variant="ghost" onClick={onClose}>
         ← Voltar

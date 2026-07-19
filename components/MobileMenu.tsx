@@ -14,7 +14,7 @@ export default function MobileMenu() {
       >
         <FontAwesomeIcon
           icon={modalWindow ? faX : faBars}
-          className="w-5 h-5  translate-y-5 sm:hidden"
+          className="w-5 h-5 sm:hidden"
         />
       </button>
 

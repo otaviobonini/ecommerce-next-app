@@ -58,7 +58,7 @@ export default function AddressModal({ onSuccess, onClose, isOpen }: Props) {
       isOpen={isOpen}
       onClose={onClose}
       portalId="address-modal"
-      className="bg-white rounded-2xl w-full max-w-md mx-4"
+      className="bg-white rounded-2xl sm:max-w-md"
     >
       <h2>Novo endereço</h2>
         <form onSubmit={handleSubmit} className="flex flex-col gap-5 mt-5">

@@ -27,11 +27,13 @@ export default function Modal({
   return createPortal(
     <div
       onClick={onClose}
-      className="fixed inset-0 bg-black/50 z-80 flex items-center justify-center"
+      className="fixed inset-0 z-80 flex items-center justify-center overflow-y-auto bg-black/50 p-4"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`p-6 ${className ?? "bg-white rounded-lg"}`}
+        className={`max-h-[90dvh] w-full overflow-y-auto p-6 ${
+          className ?? "bg-white rounded-lg sm:max-w-lg"
+        }`}
       >
         {children}
       </div>

@@ -55,52 +55,48 @@ export default async function RootLayout({
                   <div id="auth-modal"></div>
                   <div id="address-modal"></div>
                   <div id="admin-modal"></div>
-                  <div className="bg-black flex flex-col">
-                    <ul className="flex flex-wrap md:flex items-center gap-4 lg:ml-auto lg:mr-auto text-white ">
-                      <li className="ml-2 md:ml-6 mb-8 flex items-center ">
+                  <div className="bg-black flex flex-col ">
+                    <nav className="flex flex-wrap items-center gap-x-4 gap-y-3 px-4 py-3 text-white">
+                      {/* Esquerda: menu mobile + logo */}
+                      <div className="flex items-center align-middle gap-1 md:order-1 p-4">
                         <MobileMenu></MobileMenu>
-                        <Link href="/">
+                        <Link href="/" className="flex items-center">
                           <Image
-                            height={150}
-                            width={150}
+                            height={500}
+                            width={500}
                             src={Logo}
-                            alt="Logo"
+                            alt="Faciliteei"
+                            className="h-24 w-auto lg:h-38 md:mb-8"
                           />
                         </Link>
-                      </li>
+                      </div>
 
-                      <li className="order-1 w-full mb-6 mr-3 ml-3  sm:order-0 sm:mb-0 sm:w-auto">
-                        <InputComponent></InputComponent>
-                      </li>
-
-                      <li className="ml-auto lg:ml-0">
-                        <Link
-                          className="flex lg:text-lg items-center gap-4 "
-                          href="/"
-                        >
-                          <FontAwesomeIcon className="h-7 w-7" icon={faTruck} />
-                          <span className="hidden md:inline">
+                      {/* Direita: ações (no mobile ml-auto empurra pra direita) */}
+                      <div className="ml-auto flex items-center gap-4 lg:gap-6 lg:text-lg md:order-3">
+                        <Link className="flex items-center gap-2" href="/">
+                          <FontAwesomeIcon className="h-6 w-6" icon={faTruck} />
+                          <span className="hidden lg:inline">
                             Rastrear seu pedido
                           </span>
                         </Link>
-                      </li>
 
-                      <li className="">
-                        <div className="flex items-center lg:text-lg gap-4 mr-4 relative hover:cursor-pointer">
+                        <div className="relative hover:cursor-pointer">
                           <Carrinho></Carrinho>
                         </div>
-                      </li>
-                      <li className="-ml-2  sm:block">
-                        <div className="flex items-center lg:text-lg gap-4 mr-4 relative hover:cursor-pointer">
+                        <div className="relative hover:cursor-pointer">
                           <LogoutButton></LogoutButton>
                         </div>
-                      </li>
-                      <li className="-ml-2">
-                        <div className="flex items-center lg:text-lg gap-4 mr-4 relative hover:cursor-pointer">
+                        <div className="relative hover:cursor-pointer">
                           <UserProfile></UserProfile>
                         </div>
-                      </li>
-                    </ul>
+                      </div>
+
+                      {/* Busca: por último no DOM -> quebra pra própria linha no mobile;
+                          no desktop, order-2 puxa pro meio e flex-1 ocupa todo o espaço livre */}
+                      <div className="w-full mb-4 md:mb-0 min-w-0 md:order-2 md:w-auto md:flex-1">
+                        <InputComponent></InputComponent>
+                      </div>
+                    </nav>
 
                     <ul className="gap-10 ml-auto mr-auto p-6 text-white hidden sm:flex">
                       <Link

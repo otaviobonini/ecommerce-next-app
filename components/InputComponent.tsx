@@ -42,13 +42,13 @@ export default function InputComponent() {
 
   return (
     <>
-      <div className="relative flex items-center -mt-16 lg:mt-0 ">
+      <div className="relative flex items-center w-full">
         <input
           id="searchbar"
           onChange={(e) => handleChange(e)}
           value={text}
           placeholder="O que está buscando?"
-          className="bg-white order-2  placeholder:text-gray-500 text-black rounded-lg px-4 py-2   w-full md:w-3xl lg:w-250  "
+          className="bg-white placeholder:text-gray-500 text-black rounded-lg px-4 py-2 w-full"
           type="text"
         />
 
