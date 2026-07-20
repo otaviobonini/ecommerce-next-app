@@ -1,36 +1,137 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Faciliteei — Front-end
 
-## Getting Started
+Loja de tecnologia e periféricos: catálogo, carrinho, checkout e painel administrativo. Front-end em Next.js 16 (App Router) consumindo uma API própria em Express/Prisma.
 
-First, run the development server:
+**🔗 [Ver o site no ar](https://ecommerce.otaviobonini.dev)** · [API](https://ecommerce-api.otaviobonini.dev/health) · [Repositório do back-end](https://github.com/otaviobonini/ecommerce-api-node) · [Repositório de infraestrutura](https://github.com/otaviobonini/ecommerce-infra)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## Screenshots
+
+> Enquanto isso, o jeito mais rápido de ver o projeto é [abrir o site](https://ecommerce.otaviobonini.dev).
+
+<!--
+Pra ativar: crie a pasta docs/ com home.png, produto.png e admin.png,
+descomente a tabela abaixo e apague a linha do "Enquanto isso" acima.
+
+| Home | Produto | Painel admin |
+| --- | --- | --- |
+| ![Home](docs/home.png) | ![Página de produto](docs/produto.png) | ![Painel administrativo](docs/admin.png) |
+-->
+
+---
+
+## Arquitetura
+
+O projeto é dividido em três repositórios: front-end, API e infraestrutura como código.
+
+```mermaid
+flowchart LR
+    U[Navegador] --> V["Next.js 16<br/>(Vercel)"]
+    V -->|HTTPS| C["Caddy<br/>TLS + proxy reverso"]
+    C --> A["API Express 5<br/>Docker · EC2 t4g.micro"]
+    A --> P[("PostgreSQL<br/>Neon")]
+    A --> R[("Redis<br/>Upstash")]
+    U -->|imagens| CF["CloudFront + S3"]
+    A -->|upload| CF
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+| Camada | Escolha | Motivo |
+| --- | --- | --- |
+| Front-end | Vercel | Build e CDN nativos pro Next, deploy por push |
+| API | EC2 `t4g.micro` (ARM) + Docker | Instância própria pra praticar infra; ARM é mais barato |
+| TLS / proxy | Caddy | Certificado automático, config mínima |
+| Banco | Neon (Postgres serverless) | Sem servidor pra manter, escala a zero |
+| Cache / rate limit | Upstash (Redis) | Limites compartilhados entre instâncias |
+| Imagens | S3 + CloudFront | Entrega em CDN, bucket privado |
+| Infra | Terraform | EC2, security group, EIP, S3 e CloudFront versionados |
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Stack
 
-## Learn More
+- **Next.js 16.2.6** (App Router, Server Components, middleware)
+- **React 19.2.4** · **TypeScript 5** (strict)
+- **Tailwind CSS 4** com design tokens próprios
+- **Zod 4** para validação de formulários
+- **Vitest 4** + Testing Library — 13 arquivos de teste cobrindo contexts e services
+- **ESLint** rodando na CI a cada push
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Funcionalidades
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Loja**
+- Catálogo com navegação por categorias e página de mais vendidos
+- Busca de produtos com dropdown de resultados
+- Página de produto com galeria de imagens
+- Carrinho persistente por usuário
+- Checkout com endereço de entrega
+- Histórico de pedidos e acompanhamento de status
 
-## Deploy on Vercel
+**Conta**
+- Cadastro e login com sessão via cookie httpOnly
+- Perfil e gerenciamento de múltiplos endereços
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Painel administrativo** (`/admin`, restrito a `ADMIN`)
+- CRUD de produtos, com upload de imagens pro S3
+- CRUD de categorias
+- Listagem de pedidos e atualização de status
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## Decisão técnica: autenticação e o gate de `/admin`
+
+O ponto mais interessante do projeto, e o que deu mais trabalho pra acertar.
+
+**Como a sessão funciona.** O *refresh token* vive num cookie `httpOnly` (invisível pro JavaScript, imune a XSS) e o *access token* fica só em memória no React — nunca em `localStorage`. O refresh token é opaco e rotaciona a cada uso: o antigo é invalidado quando um novo é emitido.
+
+**O problema.** Para proteger `/admin` no servidor, o `middleware.ts` precisa descobrir a role antes de renderizar a página. A primeira versão perguntava isso ao `POST /refresh-token`, que devolve um JWT com a role. Funcionava — e quebrava: como esse endpoint **rotaciona** o token, cada navegação dentro de `/admin` invalidava o cookie anterior. Qualquer descompasso com a renovação automática do `AuthContext` deixava o browser com um token já morto, e o admin era jogado pra home.
+
+**A solução.** Um endpoint dedicado e **somente-leitura**, `POST /auth/admin-session`, que valida o cookie e responde `200` para admin ou `401`/`403` caso contrário — sem rotacionar nada. Sendo idempotente, pode ser chamado a cada navegação sem efeito colateral.
+
+> **Lição:** um token de uso único e rotativo não serve para uma checagem de autorização que roda a cada navegação. A verificação precisa ser idempotente.
+
+O gate do middleware é defesa em profundidade, não a fronteira de segurança: toda rota administrativa da API é validada de novo no servidor.
+
+---
+
+## Rodando localmente
+
+Requer a [API](https://github.com/otaviobonini/ecommerce-api-node) rodando (por padrão em `http://localhost:5000`).
+
+```bash
+git clone https://github.com/otaviobonini/ecommerce-next-app.git
+cd ecommerce-next-app
+npm install
+```
+
+Crie um `.env.local`:
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:5000
+```
+
+```bash
+npm run dev     # http://localhost:3000
+```
+
+| Comando | O que faz |
+| --- | --- |
+| `npm run dev` | Servidor de desenvolvimento |
+| `npm run build` | Build de produção |
+| `npm test` | Testes com Vitest |
+| `npm run test:ui` | Testes com interface gráfica |
+| `npm run lint` | ESLint |
+
+O build é resiliente à API estar fora do ar: as categorias do menu são buscadas dentro do componente e falham em silêncio, então o deploy não quebra se a API estiver indisponível no momento do build.
+
+---
+
+## Como adicionar os screenshots
+
+1. Crie a pasta `docs/` na raiz do repositório.
+2. Salve três imagens: `home.png`, `produto.png` e `admin.png`.
+3. Commite — o GitHub renderiza automaticamente na tabela acima.
+
+Dica: capture em viewport de ~1440px de largura e recorte só a área de conteúdo.
