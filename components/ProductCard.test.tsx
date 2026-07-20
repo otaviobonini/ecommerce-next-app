@@ -11,7 +11,7 @@ describe("ProductCard", () => {
     // regex com \s*: o Intl separa "R$" do número com non-breaking space,
     // e a Testing Library normaliza espaços do DOM — regex cobre os dois
     expect(screen.getByText(/R\$\s*100,00/)).toBeInTheDocument();
-    expect(screen.getByAltText("")).toBeInTheDocument();
+    expect(screen.getByAltText("Produto 1")).toBeInTheDocument();
     expect(screen.getByRole("link")).toHaveAttribute("href", "/product/1");
   });
 });
