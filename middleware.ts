@@ -17,7 +17,7 @@ export async function middleware(request: NextRequest) {
     return redirectHome();
   }
 
-  const backendRes = await fetch(`${API_URL}/refresh-token`, {
+  const backendRes = await fetch(`${API_URL}/auth/admin-session`, {
     method: "POST",
     headers: { cookie: cookieHeader },
   });
@@ -26,23 +26,11 @@ export async function middleware(request: NextRequest) {
     return redirectHome();
   }
 
-  const { token } = (await backendRes.json()) as { token: string };
-  const payload = JSON.parse(atob(token.split(".")[1])) as { role?: string };
 
-  if (payload.role !== "ADMIN") {
-    return redirectHome();
-  }
 
-  const response = NextResponse.next();
 
-  // repassa o Set-Cookie do refresh rotacionado, senão o browser fica com um
-  // refreshToken que o backend já invalidou e a próxima chamada falha
-  const setCookie = backendRes.headers.get("set-cookie");
-  if (setCookie) {
-    response.headers.set("set-cookie", setCookie);
-  }
+  return NextResponse.next();
 
-  return response;
 }
 
 export const config = {

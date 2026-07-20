@@ -21,8 +21,8 @@ shrink-0 flex flex-col group  rounded-lg transition-all duration-300 p-4"
       <Image
         src={img}
         alt={category}
-        width={200}
-        height={200}
+        width={400}
+        height={400}
         className="  h-32 w-32
   md:h-48 md:w-48
   rounded-full

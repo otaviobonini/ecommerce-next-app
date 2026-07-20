@@ -66,7 +66,7 @@ export default async function RootLayout({
                             width={500}
                             src={Logo}
                             alt="Faciliteei"
-                            className="h-24 w-auto lg:h-38 md:mb-8"
+                            className="h-24 w-auto -translate-y-2 lg:h-38 md:mb-8"
                           />
                         </Link>
                       </div>
