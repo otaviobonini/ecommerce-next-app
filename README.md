@@ -8,45 +8,59 @@ Loja de tecnologia e periféricos: catálogo, carrinho, checkout e painel admini
 
 ## Screenshots
 
+### Loja
+
+**Home**
+
 ![Home](docs/home.jpg)
 
-<details>
-<summary><b>Loja</b> — catálogo, categorias, produto e contato</summary>
-<br>
+**Home — categorias e mais vendidos**
 
-| Categorias e mais vendidos | Listagem por categoria |
-| --- | --- |
-| ![Seção de categorias e mais vendidos da home](docs/home2.jpg) | ![Listagem de produtos por categoria](docs/category.jpg) |
+![Seção de categorias e mais vendidos da home](docs/home2.jpg)
 
-| Página de produto | Contato |
-| --- | --- |
-| ![Página de produto](docs/product.jpg) | ![Formulário de contato](docs/getContactPage.jpg) |
+**Listagem por categoria**
 
-</details>
+![Listagem de produtos por categoria](docs/category.jpg)
 
-<details>
-<summary><b>Conta do cliente</b> — perfil, endereços e pedidos</summary>
-<br>
+**Página de produto**
 
-| Perfil | Endereços | Meus pedidos |
-| --- | --- | --- |
-| ![Perfil do usuário](docs/profile.jpg) | ![Gerenciamento de endereços](docs/address.jpg) | ![Histórico de pedidos](docs/pedidos.jpg) |
+![Página de produto](docs/product.jpg)
 
-</details>
+**Contato**
 
-<details>
-<summary><b>Painel administrativo</b> — visão geral e CRUDs</summary>
-<br>
+![Formulário de contato](docs/getContactPage.jpg)
 
-| Visão geral | Produtos |
-| --- | --- |
-| ![Visão geral do painel administrativo](docs/adminpage.jpg) | ![Gerenciamento de produtos](docs/adminproductspage.jpg) |
+### Conta do cliente
 
-| Categorias | Pedidos |
-| --- | --- |
-| ![Gerenciamento de categorias](docs/categoriesadminpage.jpg) | ![Gerenciamento de pedidos](docs/ordersadminpage.jpg) |
+**Perfil**
 
-</details>
+![Perfil do usuário](docs/profile.jpg)
+
+**Endereços**
+
+![Gerenciamento de endereços](docs/address.jpg)
+
+**Meus pedidos**
+
+![Histórico de pedidos](docs/pedidos.jpg)
+
+### Painel administrativo
+
+**Visão geral**
+
+![Visão geral do painel administrativo](docs/adminpage.jpg)
+
+**Produtos**
+
+![Gerenciamento de produtos](docs/adminproductspage.jpg)
+
+**Categorias**
+
+![Gerenciamento de categorias](docs/categoriesadminpage.jpg)
+
+**Pedidos**
+
+![Gerenciamento de pedidos](docs/ordersadminpage.jpg)
 
 ---
 
