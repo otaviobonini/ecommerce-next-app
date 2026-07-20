@@ -8,16 +8,45 @@ Loja de tecnologia e periféricos: catálogo, carrinho, checkout e painel admini
 
 ## Screenshots
 
-> Enquanto isso, o jeito mais rápido de ver o projeto é [abrir o site](https://ecommerce.otaviobonini.dev).
+![Home](docs/home.jpg)
 
-<!--
-Pra ativar: crie a pasta docs/ com home.png, produto.png e admin.png,
-descomente a tabela abaixo e apague a linha do "Enquanto isso" acima.
+<details>
+<summary><b>Loja</b> — catálogo, categorias, produto e contato</summary>
+<br>
 
-| Home | Produto | Painel admin |
+| Categorias e mais vendidos | Listagem por categoria |
+| --- | --- |
+| ![Seção de categorias e mais vendidos da home](docs/home2.jpg) | ![Listagem de produtos por categoria](docs/category.jpg) |
+
+| Página de produto | Contato |
+| --- | --- |
+| ![Página de produto](docs/product.jpg) | ![Formulário de contato](docs/getContactPage.jpg) |
+
+</details>
+
+<details>
+<summary><b>Conta do cliente</b> — perfil, endereços e pedidos</summary>
+<br>
+
+| Perfil | Endereços | Meus pedidos |
 | --- | --- | --- |
-| ![Home](docs/home.png) | ![Página de produto](docs/produto.png) | ![Painel administrativo](docs/admin.png) |
--->
+| ![Perfil do usuário](docs/profile.jpg) | ![Gerenciamento de endereços](docs/address.jpg) | ![Histórico de pedidos](docs/pedidos.jpg) |
+
+</details>
+
+<details>
+<summary><b>Painel administrativo</b> — visão geral e CRUDs</summary>
+<br>
+
+| Visão geral | Produtos |
+| --- | --- |
+| ![Visão geral do painel administrativo](docs/adminpage.jpg) | ![Gerenciamento de produtos](docs/adminproductspage.jpg) |
+
+| Categorias | Pedidos |
+| --- | --- |
+| ![Gerenciamento de categorias](docs/categoriesadminpage.jpg) | ![Gerenciamento de pedidos](docs/ordersadminpage.jpg) |
+
+</details>
 
 ---
 
@@ -125,13 +154,3 @@ npm run dev     # http://localhost:3000
 | `npm run lint` | ESLint |
 
 O build é resiliente à API estar fora do ar: as categorias do menu são buscadas dentro do componente e falham em silêncio, então o deploy não quebra se a API estiver indisponível no momento do build.
-
----
-
-## Como adicionar os screenshots
-
-1. Crie a pasta `docs/` na raiz do repositório.
-2. Salve três imagens: `home.png`, `produto.png` e `admin.png`.
-3. Commite — o GitHub renderiza automaticamente na tabela acima.
-
-Dica: capture em viewport de ~1440px de largura e recorte só a área de conteúdo.
